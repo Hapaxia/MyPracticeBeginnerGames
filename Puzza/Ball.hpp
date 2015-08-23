@@ -9,7 +9,7 @@ class Ball
 {
 public:
 	Ball();
-	void moveForwards();
+	void update(float dt);
 	sf::Vector2f getPosition();
 	float getDirection();
 	float getSpeed();

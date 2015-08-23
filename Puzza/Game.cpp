@@ -4,10 +4,13 @@ Game::Game():
 ball(),
 timestep(),
 window(sf::VideoMode(800, 600), "Puzza", sf::Style::Default),
-ballGraphic(ball.getRadius())
+ballGraphic(ball.getRadius()),
+paddle(),
+paddleGraphic({ 20.f, 100.f })
 {
 	ballGraphic.setOrigin(ballGraphic.getRadius(), ballGraphic.getRadius());
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
+	paddleGraphic.setOrigin(sf::Vector2f{ paddleGraphic.getLocalBounds().width, paddleGraphic.getLocalBounds().height } / 2.f);
 }
 
 void Game::run()
@@ -31,16 +34,31 @@ void Game::run()
 		timestep.addFrame();
 		while (timestep.isUpdateRequired())
 		{
+			// update paddle
+
+			// input
+			const float mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window)).y;
+			paddle.setTargetPosition((mouse / window.getSize().y) * 2 - 1);
+
+			// update
+			paddle.update(timestep.getStepAsFloat());
+
+
+
+			// update ball
+
+			// input
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				ball.changeSpeed(0.1f);
+				ball.changeSpeed(5.f);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				ball.changeSpeed(-0.1f);
+				ball.changeSpeed(-5.f);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				ball.setDirection(ball.getDirection() + 1.f);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				ball.setDirection(ball.getDirection() - 1.f);
 
-			ball.moveForwards();
+			// update
+			ball.update(timestep.getStepAsFloat());
 			if (ball.getPosition().x < ball.getRadius())
 			{
 				ball.setPosition({ ball.getRadius(), ball.getPosition().y });
@@ -65,10 +83,12 @@ void Game::run()
 
 		// update graphics
 		ballGraphic.setPosition(ball.getPosition());
+		paddleGraphic.setPosition(sf::Vector2f{ 30.f, ((window.getSize().y * 0.4f) * paddle.getPosition()) + (window.getSize().y / 2) });
 
 		// update display
 		window.clear();
 		window.draw(ballGraphic);
+		window.draw(paddleGraphic);
 		window.display();
 	}
 }

@@ -63,9 +63,9 @@ void Ball::flipDirectionVertically()
 	setDirection(540.f - m_direction);
 }
 
-void Ball::moveForwards()
+void Ball::update(float dt)
 {
 	const float radiansFromDegreesMultiplier = 0.0174532925f; // pi / 180 approx.
 	const float directionInRadians = m_direction * radiansFromDegreesMultiplier;
-	m_position += sf::Vector2f{ sin(directionInRadians) * m_speed, -cos(directionInRadians) * m_speed };
+	m_position += dt * sf::Vector2f{ sin(directionInRadians) * m_speed, -cos(directionInRadians) * m_speed };
 }

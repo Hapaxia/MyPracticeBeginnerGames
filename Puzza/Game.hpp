@@ -6,6 +6,7 @@
 #include <Kairos.hpp>
 #include <SFML/Graphics.hpp>
 #include "Ball.hpp"
+#include "Paddle.hpp"
 
 class Game
 {
@@ -18,6 +19,8 @@ public:
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
 	sf::CircleShape ballGraphic;
+	Paddle paddle;
+	sf::RectangleShape paddleGraphic;
 };
 
 #endif // PUZZA_GAME_HPP
