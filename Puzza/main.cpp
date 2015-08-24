@@ -12,7 +12,7 @@ int main()
 	}
 	catch (int e)
 	{
-		DEV::printLine("Exception caught:\n\"" + pl::stringFrom(e) + "\"");
+		DEV::printLine("Exception caught: " + pl::stringFrom(e));
 		return EXIT_FAILURE;
 	}
 	catch (char* e)
