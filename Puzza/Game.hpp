@@ -15,11 +15,11 @@ public:
 	void run();
 
 public:
-	Ball ball;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
-	sf::CircleShape ballGraphic;
+	Ball ball;
 	Paddle paddle;
+	sf::CircleShape ballGraphic;
 	sf::RectangleShape paddleGraphic;
 };
 

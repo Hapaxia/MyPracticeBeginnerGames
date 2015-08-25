@@ -60,7 +60,7 @@ void Ball::flipDirectionHorizontally()
 
 void Ball::flipDirectionVertically()
 {
-	setDirection(540.f - m_direction);
+	setDirection(180.f - m_direction);
 }
 
 void Ball::update(float dt)

@@ -43,6 +43,9 @@ void Game::run()
 			// update
 			paddle.update(timestep.getStepAsFloat());
 
+			// update graphic
+			paddleGraphic.setPosition(sf::Vector2f{ 30.f, ((window.getSize().y * 0.4f) * paddle.getPosition()) + (window.getSize().y / 2) });
+
 
 
 			// update ball
@@ -59,6 +62,11 @@ void Game::run()
 
 			// update
 			ball.update(timestep.getStepAsFloat());
+
+			// update graphic
+			ballGraphic.setPosition(ball.getPosition());
+
+			// collision with borders
 			if (ball.getPosition().x < ball.getRadius())
 			{
 				ball.setPosition({ ball.getRadius(), ball.getPosition().y });
@@ -79,11 +87,17 @@ void Game::run()
 				ball.setPosition({ ball.getPosition().x, window.getSize().y - ball.getRadius() });
 				ball.flipDirectionVertically();
 			}
+
+			// collision with paddle
+			if (ballGraphic.getGlobalBounds().intersects(paddleGraphic.getGlobalBounds()) &&
+				(pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopLeft(paddleGraphic).y, pl::Anchor::Global::getBottomCenter(paddleGraphic).y })) &&
+				(ball.getDirection() > 180.f))
+			{
+				ball.setPosition({ pl::Anchor::Global::getCenterRight(paddleGraphic).x + ball.getRadius(), ball.getPosition().y });
+				ball.flipDirectionHorizontally();
+			}
 		}
 
-		// update graphics
-		ballGraphic.setPosition(ball.getPosition());
-		paddleGraphic.setPosition(sf::Vector2f{ 30.f, ((window.getSize().y * 0.4f) * paddle.getPosition()) + (window.getSize().y / 2) });
 
 		// update display
 		window.clear();
