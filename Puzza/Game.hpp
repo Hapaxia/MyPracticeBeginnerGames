@@ -14,7 +14,8 @@ public:
 	Game();
 	void run();
 
-public:
+private:
+	const std::string windowTitle;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
 	Ball ball;
@@ -24,6 +25,13 @@ public:
 	sf::RectangleShape playerGraphic;
 	sf::RectangleShape opponentGraphic;
 	const float paddlePositionOffsetFromWindowSide;
+	const float paddleReachFromCenter;
+
+	void resetBall();
+	void update();
+	void updatePlayerPaddle();
+	void updateOpponentPaddle();
+	void updateBall();
 };
 
 #endif // PUZZA_GAME_HPP
