@@ -18,9 +18,12 @@ public:
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
 	Ball ball;
-	Paddle paddle;
+	Paddle player;
+	Paddle opponent;
 	sf::CircleShape ballGraphic;
-	sf::RectangleShape paddleGraphic;
+	sf::RectangleShape playerGraphic;
+	sf::RectangleShape opponentGraphic;
+	const float paddlePositionOffsetFromWindowSide;
 };
 
 #endif // PUZZA_GAME_HPP
