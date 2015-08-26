@@ -14,6 +14,9 @@ public:
 	void setDeceleration(float deceleration);
 	float getPosition() const;
 	float getSpeed() const; // will be used to calculate how it contacts the ball
+	void resetScore();
+	void increaseScore();
+	unsigned int getScore() const;
 
 private:
 	float m_speed; // current speed and direction of the paddle (negative is upwards)
@@ -22,6 +25,7 @@ private:
 	float m_deceleration; // rate of speed decreases
 	float m_position; // current position of the paddle (negative is upwards, zero is the centre, range is [-1 - 1])
 	float m_targetPosition; // target position of the paddle - paddle moves automatically towards the target
+	unsigned int m_score;
 
 	bool targetPositionReached() const;
 };

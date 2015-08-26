@@ -4,19 +4,26 @@ Game::Game():
 windowTitle("Puzza (WIP:2015) by Hapax (github.com/Hapaxia)"),
 timestep(),
 window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default),
+scores(window),
 ball(),
 player(),
 opponent(),
 ballGraphic(ball.getRadius()),
 playerGraphic({ 20.f, 100.f }),
 opponentGraphic(playerGraphic.getSize()),
+font(),
 paddlePositionOffsetFromWindowSide(50.f),
 paddleReachFromCenter(window.getSize().y * 0.4f)
 {
+	if (!font.loadFromFile("resources/arial.ttf"))
+		throw "Failed to load font.";
+	scores.setFont(font);
+	window.setMouseCursorVisible(false);
 	ballGraphic.setOrigin(ballGraphic.getRadius(), ballGraphic.getRadius());
 	playerGraphic.setOrigin(sf::Vector2f{ playerGraphic.getLocalBounds().width, playerGraphic.getLocalBounds().height } / 2.f);
 	opponentGraphic.setOrigin(sf::Vector2f{ opponentGraphic.getLocalBounds().width, opponentGraphic.getLocalBounds().height } / 2.f);
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
+	timestep.setStep(1.0 / 500.0); // decrease timestep size to a 500th of a second to catch collisions at higher ball speeds
 }
 
 void Game::run()
@@ -53,13 +60,14 @@ void Game::run()
 		window.draw(ballGraphic);
 		window.draw(playerGraphic);
 		window.draw(opponentGraphic);
+		window.draw(scores);
 		window.display();
 	}
 }
 
 void Game::resetBall()
 {
-	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
+	ball.setPosition(window.getView().getSize() / 2.f);
 	ball.setDirection(115.f);
 	ball.setSpeed(200.f);
 }
@@ -69,32 +77,33 @@ void Game::update()
 	updatePlayerPaddle();
 	updateOpponentPaddle();
 	updateBall();
+	updateScores();
 }
 
 void Game::updatePlayerPaddle()
 {
 	// input
 	const float mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window)).y;
-	player.setTargetPosition((mouse / window.getSize().y) * 2 - 1);
+	player.setTargetPosition((mouse / window.getView().getSize().y) * 2 - 1);
 
 	// update
 	player.update(timestep.getStepAsFloat());
 
 	// update graphic
-	playerGraphic.setPosition(sf::Vector2f{ paddlePositionOffsetFromWindowSide, (paddleReachFromCenter * player.getPosition()) + (window.getSize().y / 2) });
+	playerGraphic.setPosition(sf::Vector2f{ paddlePositionOffsetFromWindowSide, (paddleReachFromCenter * player.getPosition()) + (window.getView().getSize().y / 2) });
 }
 
 void Game::updateOpponentPaddle()
 {
 	// input
 	const float opponentTarget = ball.getPosition().y;
-	opponent.setTargetPosition((opponentTarget - (window.getSize().y / 2)) / paddleReachFromCenter);
+	opponent.setTargetPosition((opponentTarget - (window.getView().getSize().y / 2)) / paddleReachFromCenter);
 
 	// update
 	opponent.update(timestep.getStepAsFloat());
 
 	// update graphic
-	opponentGraphic.setPosition(sf::Vector2f{ window.getSize().x - paddlePositionOffsetFromWindowSide, (paddleReachFromCenter * opponent.getPosition()) + (window.getSize().y / 2) });
+	opponentGraphic.setPosition(sf::Vector2f{ window.getView().getSize().x - paddlePositionOffsetFromWindowSide, (paddleReachFromCenter * opponent.getPosition()) + (window.getView().getSize().y / 2) });
 }
 
 void Game::updateBall()
@@ -113,17 +122,23 @@ void Game::updateBall()
 	ball.update(timestep.getStepAsFloat());
 
 	// collision with top or bottom
-	if ((ball.getPosition().y < ball.getRadius()) || (ball.getPosition().y > window.getSize().y - ball.getRadius()))
+	if ((ball.getPosition().y < ball.getRadius()) || (ball.getPosition().y > window.getView().getSize().y - ball.getRadius()))
 	{
-		ball.setPosition({ ball.getPosition().x, pl::clamp(ball.getPosition().y, ball.getRadius(), window.getSize().y - ball.getRadius()) });
+		ball.setPosition({ ball.getPosition().x, pl::clamp(ball.getPosition().y, ball.getRadius(), window.getView().getSize().y - ball.getRadius()) });
 		ball.flipDirectionVertically();
 	}
 
 	// collision with sides
 	if (ball.getPosition().x < ball.getRadius())
+	{
+		opponent.increaseScore();
 		resetBall();
-	else if (ball.getPosition().x > window.getSize().x - ball.getRadius())
+	}
+	else if (ball.getPosition().x > window.getView().getSize().x - ball.getRadius())
+	{
+		player.increaseScore();
 		resetBall();
+	}
 
 	// collision with player paddle
 	if (ballGraphic.getGlobalBounds().intersects(playerGraphic.getGlobalBounds()) &&
@@ -149,4 +164,10 @@ void Game::updateBall()
 
 	// update graphic
 	ballGraphic.setPosition(ball.getPosition());
+}
+
+void Game::updateScores()
+{
+	scores.updatePlayer(player.getScore());
+	scores.updateOpponent(opponent.getScore());
 }

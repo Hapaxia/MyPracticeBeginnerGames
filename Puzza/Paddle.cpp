@@ -6,7 +6,8 @@ m_maxSpeed(10.f),
 m_acceleration(30.f),
 m_deceleration(1000.f),
 m_position(0.f),
-m_targetPosition(0.f)
+m_targetPosition(0.f),
+m_score(0u)
 {
 
 }
@@ -78,6 +79,21 @@ float Paddle::getPosition() const
 float Paddle::getSpeed() const
 {
 	return m_speed;
+}
+
+void Paddle::resetScore()
+{
+	m_score = 0u;
+}
+
+void Paddle::increaseScore()
+{
+	++m_score;
+}
+
+unsigned int Paddle::getScore() const
+{
+	return m_score;
 }
 
 bool Paddle::targetPositionReached() const
