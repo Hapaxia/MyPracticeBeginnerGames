@@ -144,25 +144,53 @@ void Game::updateBall()
 	}
 
 	// collision with player paddle
-	if (ballGraphic.getGlobalBounds().intersects(playerGraphic.getGlobalBounds()) &&
-		(pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopCenter(playerGraphic).y, pl::Anchor::Global::getBottomCenter(playerGraphic).y })) &&
-		(ball.getPosition().x > pl::Anchor::Global::getCenterRight(playerGraphic).x) &&
-		(ball.getDirection() > 180.f))
+	if (ballGraphic.getGlobalBounds().intersects(playerGraphic.getGlobalBounds()))
 	{
-		ball.setPosition({ pl::Anchor::Global::getCenterRight(playerGraphic).x + ball.getRadius(), ball.getPosition().y });
-		ball.flipDirectionHorizontally();
-		ball.changeSpeed(25.f);
+		if ((pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopCenter(playerGraphic).y, pl::Anchor::Global::getBottomCenter(playerGraphic).y })) &&
+			(ball.getPosition().x > pl::Anchor::Global::getCenterRight(playerGraphic).x) &&
+			(ball.getDirection() > 180.f))
+		{
+			ball.setPosition({ pl::Anchor::Global::getCenterRight(playerGraphic).x + ball.getRadius(), ball.getPosition().y });
+			ball.flipDirectionHorizontally();
+			ball.changeSpeed(25.f);
+		}
+		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(playerGraphic).y)
+		{
+			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getTopCenter(playerGraphic).y - ball.getRadius() });
+			if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				ball.flipDirectionVertically();
+		}
+		else if (ball.getPosition().y > pl::Anchor::Global::getBottomCenter(playerGraphic).y)
+		{
+			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getBottomCenter(playerGraphic).y + ball.getRadius() });
+			if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				ball.flipDirectionVertically();
+		}
 	}
 
 	// collision with opponent paddle
-	if (ballGraphic.getGlobalBounds().intersects(opponentGraphic.getGlobalBounds()) &&
-		(pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopCenter(opponentGraphic).y, pl::Anchor::Global::getBottomCenter(opponentGraphic).y })) &&
-		(ball.getPosition().x < pl::Anchor::Global::getCenterLeft(opponentGraphic).x) &&
-		(ball.getDirection() < 180.f))
+	if (ballGraphic.getGlobalBounds().intersects(opponentGraphic.getGlobalBounds()))
 	{
-		ball.setPosition({ pl::Anchor::Global::getCenterLeft(opponentGraphic).x - ball.getRadius(), ball.getPosition().y });
-		ball.flipDirectionHorizontally();
-		ball.changeSpeed(25.f);
+		if ((pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopCenter(opponentGraphic).y, pl::Anchor::Global::getBottomCenter(opponentGraphic).y })) &&
+			(ball.getPosition().x < pl::Anchor::Global::getCenterLeft(opponentGraphic).x) &&
+			(ball.getDirection() < 180.f))
+		{
+			ball.setPosition({ pl::Anchor::Global::getCenterLeft(opponentGraphic).x - ball.getRadius(), ball.getPosition().y });
+			ball.flipDirectionHorizontally();
+			ball.changeSpeed(25.f);
+		}
+		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
+		{
+			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getTopCenter(opponentGraphic).y - ball.getRadius() });
+			if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				ball.flipDirectionVertically();
+		}
+		else if (ball.getPosition().y > pl::Anchor::Global::getBottomCenter(opponentGraphic).y)
+		{
+			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getBottomCenter(opponentGraphic).y + ball.getRadius() });
+			if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				ball.flipDirectionVertically();
+		}
 	}
 
 	// update graphic
