@@ -13,11 +13,14 @@ public:
 	sf::Vector2f getPosition();
 	float getDirection();
 	float getSpeed();
+	float getSpin();
 	float getRadius();
 	void setPosition(sf::Vector2f position);
 	void setDirection(float direction);
 	void setSpeed(float speed);
 	void changeSpeed(float speedChange);
+	void setSpin(float spin);
+	void changeSpin(float spinChange);
 	void setRadius(float radius);
 	void flipDirectionHorizontally();
 	void flipDirectionVertically();
@@ -27,6 +30,7 @@ private:
 	float m_direction;
 	float m_speed;
 	float m_radius;
+	float m_spin;
 };
 
 #endif // PUZZA_BALL_HPP

@@ -3,8 +3,8 @@
 Paddle::Paddle():
 m_speed(0.f),
 m_maxSpeed(10.f),
-m_acceleration(10000.f),
-m_deceleration(100000.f),
+m_acceleration(1000.f),
+m_deceleration(10000.f),
 m_position(0.f),
 m_targetPosition(0.f),
 m_score(0u)

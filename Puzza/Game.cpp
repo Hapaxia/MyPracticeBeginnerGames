@@ -56,7 +56,10 @@ void Game::run()
 			update();
 
 		// update window title
-		window.setTitle(windowTitle + " | Ball Speed: " + pl::stringFrom(static_cast<int>(ball.getSpeed())));
+		window.setTitle(windowTitle +
+			" | Ball Speed: " + pl::stringFrom(static_cast<int>(ball.getSpeed())) +
+			" | Ball Spin: " + pl::stringFrom(ball.getSpin())
+			);
 
 		// update display
 		window.clear();
@@ -73,6 +76,7 @@ void Game::resetBall()
 	ball.setPosition(window.getView().getSize() / 2.f);
 	ball.setDirection(115.f);
 	ball.setSpeed(200.f);
+	ball.setSpin(0.f);
 }
 
 void Game::update()
@@ -120,6 +124,10 @@ void Game::updateBall()
 		ball.setDirection(ball.getDirection() + 0.3f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		ball.setDirection(ball.getDirection() - 0.3f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
+		ball.changeSpin(1.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
+		ball.changeSpin(-1.f);
 
 	// update
 	ball.update(timestep.getStepAsFloat());
@@ -153,6 +161,8 @@ void Game::updateBall()
 			ball.setPosition({ pl::Anchor::Global::getCenterRight(playerGraphic).x + ball.getRadius(), ball.getPosition().y });
 			ball.flipDirectionHorizontally();
 			ball.changeSpeed(25.f);
+			ball.changeSpin(-5.f * player.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
+			DEV::printLine(pl::stringFrom(ball.getSpin()));
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(playerGraphic).y)
 		{
@@ -178,6 +188,8 @@ void Game::updateBall()
 			ball.setPosition({ pl::Anchor::Global::getCenterLeft(opponentGraphic).x - ball.getRadius(), ball.getPosition().y });
 			ball.flipDirectionHorizontally();
 			ball.changeSpeed(25.f);
+			ball.changeSpin(-5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
+			DEV::printLine(pl::stringFrom(ball.getSpin()));
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
 		{
