@@ -26,6 +26,7 @@ public:
 	void flipDirectionVertically();
 
 private:
+	const float m_maximumSpin;
 	sf::Vector2f m_position;
 	float m_direction;
 	float m_speed;

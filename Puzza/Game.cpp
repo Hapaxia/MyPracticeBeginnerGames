@@ -137,6 +137,7 @@ void Game::updateBall()
 	{
 		ball.setPosition({ ball.getPosition().x, pl::clamp(ball.getPosition().y, ball.getRadius(), window.getView().getSize().y - ball.getRadius()) });
 		ball.flipDirectionVertically();
+		ball.setSpin(ball.getSpin() * 0.5f);
 	}
 
 	// collision with sides
@@ -161,8 +162,8 @@ void Game::updateBall()
 			ball.setPosition({ pl::Anchor::Global::getCenterRight(playerGraphic).x + ball.getRadius(), ball.getPosition().y });
 			ball.flipDirectionHorizontally();
 			ball.changeSpeed(25.f);
+			ball.setSpin(ball.getSpin() * 0.5f);
 			ball.changeSpin(-5.f * player.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
-			DEV::printLine(pl::stringFrom(ball.getSpin()));
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(playerGraphic).y)
 		{
@@ -188,8 +189,8 @@ void Game::updateBall()
 			ball.setPosition({ pl::Anchor::Global::getCenterLeft(opponentGraphic).x - ball.getRadius(), ball.getPosition().y });
 			ball.flipDirectionHorizontally();
 			ball.changeSpeed(25.f);
+			ball.setSpin(ball.getSpin() * 0.5f);
 			ball.changeSpin(-5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
-			DEV::printLine(pl::stringFrom(ball.getSpin()));
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
 		{

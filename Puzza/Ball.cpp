@@ -1,6 +1,7 @@
 #include "Ball.hpp"
 
 Ball::Ball():
+m_maximumSpin(50.f),
 m_position({ 0.f, 0.f }),
 m_direction(0.f),
 m_speed(0.f),
@@ -56,12 +57,12 @@ void Ball::setSpeed(float speed)
 
 void Ball::setSpin(float spin)
 {
-	m_spin = spin;
+	m_spin = pl::clamp(spin, -m_maximumSpin, m_maximumSpin);
 }
 
 void Ball::changeSpin(float spinChange)
 {
-	m_spin += spinChange;
+	setSpin(m_spin + spinChange);
 }
 
 void Ball::setRadius(float radius)
