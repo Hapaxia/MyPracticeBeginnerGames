@@ -23,6 +23,9 @@ paddleReachFromCenter(window.getSize().y * 0.4f)
 	playerGraphic.setOrigin(sf::Vector2f{ playerGraphic.getLocalBounds().width, playerGraphic.getLocalBounds().height } / 2.f);
 	opponentGraphic.setOrigin(sf::Vector2f{ opponentGraphic.getLocalBounds().width, opponentGraphic.getLocalBounds().height } / 2.f);
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
+	opponent.setAcceleration(100.f);
+	opponent.setDeceleration(250.f);
+	opponent.setMaximumSpeed(2.f);
 	timestep.setStep(1.0 / 500.0); // decrease timestep size to a 500th of a second to catch collisions at higher ball speeds
 }
 
@@ -110,13 +113,13 @@ void Game::updateBall()
 {
 	// input
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		ball.changeSpeed(5.f);
+		ball.changeSpeed(3.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		ball.changeSpeed(-5.f);
+		ball.changeSpeed(-3.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		ball.setDirection(ball.getDirection() + 1.f);
+		ball.setDirection(ball.getDirection() + 0.3f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		ball.setDirection(ball.getDirection() - 1.f);
+		ball.setDirection(ball.getDirection() - 0.3f);
 
 	// update
 	ball.update(timestep.getStepAsFloat());
