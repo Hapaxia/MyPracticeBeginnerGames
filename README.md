@@ -10,6 +10,13 @@ External libraries will be used for the development of these games:
 
 
 
+
+**Builds available:**  
+[Puzza v0.1.0](https://github.com/Hapaxia/MyPracticeBeginnerGames/releases) (Windows only)
+
+
+
+
 [SFML]: http://www.sfml-dev.org
 [Dev]: https://github.com/Hapaxia/Dev
 [Plinth]: https://github.com/Hapaxia/Plinth/wiki
