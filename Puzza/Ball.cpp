@@ -1,9 +1,11 @@
 #include "Ball.hpp"
 
 Ball::Ball():
+m_maximumSpin(50.f),
 m_position({ 0.f, 0.f }),
 m_direction(0.f),
 m_speed(0.f),
+m_spin(0.f),
 m_radius(10.f)
 {
 }
@@ -21,6 +23,11 @@ float Ball::getDirection()
 float Ball::getSpeed()
 {
 	return m_speed;
+}
+
+float Ball::getSpin()
+{
+	return m_spin;
 }
 
 float Ball::getRadius()
@@ -48,6 +55,16 @@ void Ball::setSpeed(float speed)
 	m_speed = speed;
 }
 
+void Ball::setSpin(float spin)
+{
+	m_spin = pl::clamp(spin, -m_maximumSpin, m_maximumSpin);
+}
+
+void Ball::changeSpin(float spinChange)
+{
+	setSpin(m_spin + spinChange);
+}
+
 void Ball::setRadius(float radius)
 {
 	m_radius = radius;
@@ -65,6 +82,7 @@ void Ball::flipDirectionVertically()
 
 void Ball::update(float dt)
 {
+	setDirection(m_direction + m_spin * dt);
 	const float radiansFromDegreesMultiplier = 0.0174532925f; // pi / 180 approx.
 	const float directionInRadians = m_direction * radiansFromDegreesMultiplier;
 	m_position += dt * sf::Vector2f{ sin(directionInRadians) * m_speed, -cos(directionInRadians) * m_speed };

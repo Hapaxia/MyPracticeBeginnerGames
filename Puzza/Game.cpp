@@ -25,7 +25,7 @@ paddleReachFromCenter(window.getSize().y * 0.4f)
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
 	opponent.setAcceleration(100.f);
 	opponent.setDeceleration(250.f);
-	opponent.setMaximumSpeed(2.f);
+	opponent.setMaximumSpeed(1.25f);
 	timestep.setStep(1.0 / 500.0); // decrease timestep size to a 500th of a second to catch collisions at higher ball speeds
 }
 
@@ -56,7 +56,10 @@ void Game::run()
 			update();
 
 		// update window title
-		window.setTitle(windowTitle + " | Ball Speed: " + pl::stringFrom(static_cast<int>(ball.getSpeed())));
+		window.setTitle(windowTitle +
+			" | Ball Speed: " + pl::stringFrom(static_cast<int>(ball.getSpeed())) +
+			" | Ball Spin: " + pl::stringFrom(ball.getSpin())
+			);
 
 		// update display
 		window.clear();
@@ -73,6 +76,7 @@ void Game::resetBall()
 	ball.setPosition(window.getView().getSize() / 2.f);
 	ball.setDirection(115.f);
 	ball.setSpeed(200.f);
+	ball.setSpin(0.f);
 }
 
 void Game::update()
@@ -98,8 +102,17 @@ void Game::updatePlayerPaddle()
 
 void Game::updateOpponentPaddle()
 {
-	// input
-	const float opponentTarget = ball.getPosition().y;
+	// input (AI)
+	const float radiansFromDegreesMultiplier = 0.0174532925f; // pi / 180 approx.
+	const float directionInRadians = ball.getDirection() * radiansFromDegreesMultiplier;
+	//const float opponentTarget = ball.getPosition().y; // target is ball's y position
+	//const float opponentTarget = ball.getPosition().y + (-cos(directionInRadians) * ball.getSpeed() * 0.1f); // target is ahead of ball's y position by ball's speed
+	//const float opponentTarget = ball.getPosition().y + (-cos(directionInRadians) * ball.getSpeed() * ((opponentGraphic.getPosition().x - ballGraphic.getPosition().x) / window.getView().getSize().x)); // target is ahead of ball's y position by ball's speed and distance from paddle
+
+	// target is ahead of ball's y position by ball's speed and distance from paddle but makes error based on spin
+	const float opponentTarget = ball.getPosition().y +
+		(-cos(directionInRadians) * (ball.getSpeed() / (5.f * abs(ball.getSpin() + 1.f)) *
+		((opponentGraphic.getPosition().x - ballGraphic.getPosition().x) / window.getView().getSize().x)));
 	opponent.setTargetPosition((opponentTarget - (window.getView().getSize().y / 2)) / paddleReachFromCenter);
 
 	// update
@@ -120,6 +133,10 @@ void Game::updateBall()
 		ball.setDirection(ball.getDirection() + 0.3f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		ball.setDirection(ball.getDirection() - 0.3f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
+		ball.changeSpin(0.3f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
+		ball.changeSpin(-0.3f);
 
 	// update
 	ball.update(timestep.getStepAsFloat());
@@ -128,7 +145,9 @@ void Game::updateBall()
 	if ((ball.getPosition().y < ball.getRadius()) || (ball.getPosition().y > window.getView().getSize().y - ball.getRadius()))
 	{
 		ball.setPosition({ ball.getPosition().x, pl::clamp(ball.getPosition().y, ball.getRadius(), window.getView().getSize().y - ball.getRadius()) });
+		ball.setDirection(ball.getDirection() - ball.getSpin() * 0.5f);
 		ball.flipDirectionVertically();
+		ball.setSpin(ball.getSpin() * 0.1f);
 	}
 
 	// collision with sides
@@ -151,8 +170,11 @@ void Game::updateBall()
 			(ball.getDirection() > 180.f))
 		{
 			ball.setPosition({ pl::Anchor::Global::getCenterRight(playerGraphic).x + ball.getRadius(), ball.getPosition().y });
-			ball.flipDirectionHorizontally();
 			ball.changeSpeed(25.f);
+			ball.setSpin(ball.getSpin() * 0.25f);
+			ball.setDirection(ball.getDirection() - ball.getSpin());
+			ball.flipDirectionHorizontally();
+			ball.changeSpin(-5.f * player.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(playerGraphic).y)
 		{
@@ -176,8 +198,11 @@ void Game::updateBall()
 			(ball.getDirection() < 180.f))
 		{
 			ball.setPosition({ pl::Anchor::Global::getCenterLeft(opponentGraphic).x - ball.getRadius(), ball.getPosition().y });
-			ball.flipDirectionHorizontally();
 			ball.changeSpeed(25.f);
+			ball.setSpin(ball.getSpin() * 0.25f);
+			ball.setDirection(ball.getDirection() - ball.getSpin());
+			ball.flipDirectionHorizontally();
+			ball.changeSpin(-5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
 		{

@@ -3,8 +3,8 @@
 Paddle::Paddle():
 m_speed(0.f),
 m_maxSpeed(10.f),
-m_acceleration(10000.f),
-m_deceleration(100000.f),
+m_acceleration(1000.f),
+m_deceleration(10000.f),
 m_position(0.f),
 m_targetPosition(0.f),
 m_score(0u)
@@ -48,7 +48,11 @@ void Paddle::update(float dt)
 	m_position += m_speed * dt;
 
 	// clamp position
-	m_position = pl::clamp(m_position, pl::Range<float>{ -1.f, 1.f });
+	if (!pl::inRange(m_position, pl::Range<float>{-1.f, 1.f}))
+	{
+		m_position = pl::clamp(m_position, pl::Range<float>{ -1.f, 1.f });
+		m_speed = 0.f;
+	}
 }
 
 void Paddle::setTargetPosition(float targetPosition)
