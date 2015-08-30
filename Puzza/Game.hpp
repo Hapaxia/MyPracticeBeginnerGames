@@ -30,6 +30,7 @@ private:
 	const float paddlePositionOffsetFromWindowSide;
 	const float paddleReachFromCenter;
 
+	void reset();
 	void resetBall();
 	void update();
 	void updatePlayerPaddle();

@@ -47,6 +47,13 @@ void Game::run()
 					ball.setSpeed(0.f);
 				else if (event.key.code == sf::Keyboard::F2) // resets and restarts the ball in the default position, direction and speed
 					resetBall();
+				else if (event.key.code == sf::Keyboard::F5) // resets and restarts the game (ball and scores)
+					reset();
+				else if (event.key.code == sf::Keyboard::F6) // resets the game (ball and scores). ball is stopped
+				{
+					reset();
+					ball.setSpeed(0.f);
+				}
 			}
 		}
 
@@ -69,6 +76,13 @@ void Game::run()
 		window.draw(scores);
 		window.display();
 	}
+}
+
+void Game::reset()
+{
+	resetBall();
+	player.resetScore();
+	opponent.resetScore();
 }
 
 void Game::resetBall()
