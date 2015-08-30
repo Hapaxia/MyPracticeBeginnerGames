@@ -202,7 +202,7 @@ void Game::updateBall()
 			ball.setSpin(ball.getSpin() * 0.25f);
 			ball.setDirection(ball.getDirection() - ball.getSpin());
 			ball.flipDirectionHorizontally();
-			ball.changeSpin(-5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
+			ball.changeSpin(5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 		}
 		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
 		{
