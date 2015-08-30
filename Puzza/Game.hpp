@@ -5,9 +5,11 @@
 #include <PlinthSfml.hpp>
 #include <Kairos.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Scores.hpp"
 #include "Ball.hpp"
 #include "Paddle.hpp"
+#include "Resources.hpp"
 
 class Game
 {
@@ -16,6 +18,7 @@ public:
 	void run();
 
 private:
+	Resources resources;
 	const std::string windowTitle;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
@@ -26,7 +29,7 @@ private:
 	sf::CircleShape ballGraphic;
 	sf::RectangleShape playerGraphic;
 	sf::RectangleShape opponentGraphic;
-	sf::Font font;
+	sf::Sound sound;
 	const float paddlePositionOffsetFromWindowSide;
 	const float paddleReachFromCenter;
 
@@ -36,6 +39,7 @@ private:
 	void updateOpponentPaddle();
 	void updateBall();
 	void updateScores();
+	void playSound(const std::string& soundName);
 };
 
 #endif // PUZZA_GAME_HPP
