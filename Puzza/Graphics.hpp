@@ -19,7 +19,7 @@ public:
 	Graphics(Resources& resources);
 	void updatePlayer(const sf::View& view, const Paddle& player);
 	void updateOpponent(const sf::View& view, const Paddle& opponent);
-	void updateBall(const Ball& ball);
+	void updateBall(const Ball& ball, float dt);
 	void updateSize(const sf::View& view);
 
 	bool playerCollidesWith(const sf::FloatRect& bounds) const;

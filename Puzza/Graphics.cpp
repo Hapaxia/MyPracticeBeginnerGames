@@ -30,9 +30,10 @@ void Graphics::updateOpponent(const sf::View& view, const Paddle& opponent)
 	m_opponent.setPosition(sf::Vector2f{ view.getSize().x, (m_paddleReachFromCenter * opponent.getPosition()) + (view.getSize().y / 2) });
 }
 
-void Graphics::updateBall(const Ball& ball)
+void Graphics::updateBall(const Ball& ball, const float dt)
 {
 	m_ball.setPosition(ball.getPosition());
+	m_ball.rotate(0.125f * ball.getSpin() * ball.getSpeed() * dt);
 }
 
 void Graphics::updateSize(const sf::View& view)

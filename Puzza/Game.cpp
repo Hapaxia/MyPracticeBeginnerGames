@@ -245,7 +245,7 @@ void Game::updateBall()
 	}
 
 	// update graphic
-	graphics.updateBall(ball);
+	graphics.updateBall(ball, timestep.getStepAsFloat());
 }
 
 void Game::updateScores()
