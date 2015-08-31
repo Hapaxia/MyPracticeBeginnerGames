@@ -10,27 +10,27 @@ m_radius(10.f)
 {
 }
 
-sf::Vector2f Ball::getPosition()
+sf::Vector2f Ball::getPosition() const
 {
 	return m_position;
 }
 
-float Ball::getDirection()
+float Ball::getDirection() const
 {
 	return m_direction;
 }
 
-float Ball::getSpeed()
+float Ball::getSpeed() const
 {
 	return m_speed;
 }
 
-float Ball::getSpin()
+float Ball::getSpin() const
 {
 	return m_spin;
 }
 
-float Ball::getRadius()
+float Ball::getRadius() const
 {
 	return m_radius;
 }

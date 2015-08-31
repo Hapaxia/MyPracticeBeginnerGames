@@ -10,11 +10,11 @@ class Ball
 public:
 	Ball();
 	void update(float dt);
-	sf::Vector2f getPosition();
-	float getDirection();
-	float getSpeed();
-	float getSpin();
-	float getRadius();
+	sf::Vector2f getPosition() const;
+	float getDirection() const;
+	float getSpeed() const;
+	float getSpin() const;
+	float getRadius() const;
 	void setPosition(sf::Vector2f position);
 	void setDirection(float direction);
 	void setSpeed(float speed);

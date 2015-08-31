@@ -10,6 +10,7 @@
 #include "Ball.hpp"
 #include "Paddle.hpp"
 #include "Resources.hpp"
+#include "Graphics.hpp"
 
 class Game
 {
@@ -19,6 +20,7 @@ public:
 
 private:
 	Resources resources;
+	Graphics graphics;
 	const std::string windowTitle;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
@@ -26,12 +28,7 @@ private:
 	Ball ball;
 	Paddle player;
 	Paddle opponent;
-	sf::Sprite ballGraphic;
-	sf::RectangleShape playerGraphic;
-	sf::RectangleShape opponentGraphic;
 	sf::Sound sound;
-	const float paddlePositionOffsetFromWindowSide;
-	const float paddleReachFromCenter;
 
 	void reset();
 	void resetBall();
