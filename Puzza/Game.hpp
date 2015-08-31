@@ -26,7 +26,7 @@ private:
 	Ball ball;
 	Paddle player;
 	Paddle opponent;
-	sf::CircleShape ballGraphic;
+	sf::Sprite ballGraphic;
 	sf::RectangleShape playerGraphic;
 	sf::RectangleShape opponentGraphic;
 	sf::Sound sound;

@@ -10,4 +10,6 @@ Resources::Resources()
 	addSoundBuffer("wall", resourcePath + "wall.wav");
 	addSoundBuffer("player score", resourcePath + "player.wav");
 	addSoundBuffer("opponent score", resourcePath + "opponent.wav");
+
+	addTexture("spritesheet", resourcePath + "spritesheet.png");
 }

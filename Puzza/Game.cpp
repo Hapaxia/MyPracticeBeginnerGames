@@ -9,18 +9,27 @@ scores(window),
 ball(),
 player(),
 opponent(),
-ballGraphic(ball.getRadius()),
-playerGraphic({ 20.f, 100.f }),
+ballGraphic(),
+playerGraphic({ 60.f, 100.f }),
 opponentGraphic(playerGraphic.getSize()),
 sound(),
-paddlePositionOffsetFromWindowSide(50.f),
+paddlePositionOffsetFromWindowSide(60.f),
 paddleReachFromCenter(window.getSize().y * 0.4f)
 {
 	scores.setFont(resources.getFont("main"));
 	window.setMouseCursorVisible(false);
-	ballGraphic.setOrigin(ballGraphic.getRadius(), ballGraphic.getRadius());
-	playerGraphic.setOrigin(sf::Vector2f{ playerGraphic.getLocalBounds().width, playerGraphic.getLocalBounds().height } / 2.f);
-	opponentGraphic.setOrigin(sf::Vector2f{ opponentGraphic.getLocalBounds().width, opponentGraphic.getLocalBounds().height } / 2.f);
+
+	ballGraphic.setTexture(resources.getTexture("spritesheet"));
+	ballGraphic.setTextureRect({ sf::Vector2i(0, 200), sf::Vector2i(24, 24) });
+	playerGraphic.setTexture(&resources.getTexture("spritesheet"));
+	playerGraphic.setTextureRect({ sf::Vector2i(0, 0), sf::Vector2i(60, 100) });
+	opponentGraphic.setTexture(&resources.getTexture("spritesheet"));
+	opponentGraphic.setTextureRect({ sf::Vector2i(0, 100), sf::Vector2i(60, 100) });
+
+	ballGraphic.setOrigin(pl::Anchor::Local::getCenter(ballGraphic));
+	playerGraphic.setOrigin(pl::Anchor::Local::getCenterRight(playerGraphic));
+	opponentGraphic.setOrigin(pl::Anchor::Local::getCenterLeft(opponentGraphic));
+
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
 	opponent.setAcceleration(100.f);
 	opponent.setDeceleration(250.f);
@@ -179,8 +188,14 @@ void Game::updateBall()
 		resetBall();
 	}
 
+	// create collision box for ball since we don't want to collide with the entire sprite
+	const sf::FloatRect ballCollisionBox
+	{
+		ball.getPosition().x - ball.getRadius(), ball.getPosition().y - ball.getRadius(), ball.getRadius() * 2.f, ball.getRadius() * 2.f
+	};
+
 	// collision with player paddle
-	if (ballGraphic.getGlobalBounds().intersects(playerGraphic.getGlobalBounds()))
+	if (ballCollisionBox.intersects(playerGraphic.getGlobalBounds()))
 	{
 		if ((pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopCenter(playerGraphic).y, pl::Anchor::Global::getBottomCenter(playerGraphic).y })) &&
 			(ball.getPosition().x > pl::Anchor::Global::getCenterRight(playerGraphic).x) &&
@@ -194,22 +209,25 @@ void Game::updateBall()
 			ball.flipDirectionHorizontally();
 			ball.changeSpin(-5.f * player.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 		}
-		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(playerGraphic).y)
+		else if (ball.getPosition().x > pl::Anchor::Global::getCenterRight(playerGraphic).x - 20.f)
 		{
-			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getTopCenter(playerGraphic).y - ball.getRadius() });
-			if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
-				ball.flipDirectionVertically();
-		}
-		else if (ball.getPosition().y > pl::Anchor::Global::getBottomCenter(playerGraphic).y)
-		{
-			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getBottomCenter(playerGraphic).y + ball.getRadius() });
-			if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
-				ball.flipDirectionVertically();
+			if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(playerGraphic).y)
+			{
+				ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getTopCenter(playerGraphic).y - ball.getRadius() });
+				if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+					ball.flipDirectionVertically();
+			}
+			else if (ball.getPosition().y > pl::Anchor::Global::getBottomCenter(playerGraphic).y)
+			{
+				ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getBottomCenter(playerGraphic).y + ball.getRadius() });
+				if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+					ball.flipDirectionVertically();
+			}
 		}
 	}
 
 	// collision with opponent paddle
-	if (ballGraphic.getGlobalBounds().intersects(opponentGraphic.getGlobalBounds()))
+	if (ballCollisionBox.intersects(opponentGraphic.getGlobalBounds()))
 	{
 		if ((pl::inRange(ball.getPosition().y, pl::Range<float>{ pl::Anchor::Global::getTopCenter(opponentGraphic).y, pl::Anchor::Global::getBottomCenter(opponentGraphic).y })) &&
 			(ball.getPosition().x < pl::Anchor::Global::getCenterLeft(opponentGraphic).x) &&
@@ -223,17 +241,20 @@ void Game::updateBall()
 			ball.flipDirectionHorizontally();
 			ball.changeSpin(5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 		}
-		else if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
+		else if (ball.getPosition().x < pl::Anchor::Global::getCenterLeft(opponentGraphic).x + 20.f)
 		{
-			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getTopCenter(opponentGraphic).y - ball.getRadius() });
-			if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
-				ball.flipDirectionVertically();
-		}
-		else if (ball.getPosition().y > pl::Anchor::Global::getBottomCenter(opponentGraphic).y)
-		{
-			ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getBottomCenter(opponentGraphic).y + ball.getRadius() });
-			if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
-				ball.flipDirectionVertically();
+			if (ball.getPosition().y < pl::Anchor::Global::getTopCenter(opponentGraphic).y)
+			{
+				ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getTopCenter(opponentGraphic).y - ball.getRadius() });
+				if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+					ball.flipDirectionVertically();
+			}
+			else if (ball.getPosition().y > pl::Anchor::Global::getBottomCenter(opponentGraphic).y)
+			{
+				ball.setPosition({ ball.getPosition().x, pl::Anchor::Global::getBottomCenter(opponentGraphic).y + ball.getRadius() });
+				if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+					ball.flipDirectionVertically();
+			}
 		}
 	}
 
