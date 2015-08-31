@@ -1,6 +1,7 @@
 #include "Game.hpp"
 
 Game::Game():
+resources(),
 windowTitle("Puzza (WIP:2015) by Hapax (github.com/Hapaxia)"),
 timestep(),
 window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default),
@@ -11,13 +12,11 @@ opponent(),
 ballGraphic(ball.getRadius()),
 playerGraphic({ 20.f, 100.f }),
 opponentGraphic(playerGraphic.getSize()),
-font(),
+sound(),
 paddlePositionOffsetFromWindowSide(50.f),
 paddleReachFromCenter(window.getSize().y * 0.4f)
 {
-	if (!font.loadFromFile("resources/arial.ttf"))
-		throw "Failed to load font.";
-	scores.setFont(font);
+	scores.setFont(resources.getFont("main"));
 	window.setMouseCursorVisible(false);
 	ballGraphic.setOrigin(ballGraphic.getRadius(), ballGraphic.getRadius());
 	playerGraphic.setOrigin(sf::Vector2f{ playerGraphic.getLocalBounds().width, playerGraphic.getLocalBounds().height } / 2.f);
@@ -27,6 +26,7 @@ paddleReachFromCenter(window.getSize().y * 0.4f)
 	opponent.setDeceleration(250.f);
 	opponent.setMaximumSpeed(1.25f);
 	timestep.setStep(1.0 / 500.0); // decrease timestep size to a 500th of a second to catch collisions at higher ball speeds
+	sound.setBuffer(resources.getSoundBuffer("paddle"));
 }
 
 void Game::run()
@@ -158,6 +158,7 @@ void Game::updateBall()
 	// collision with top or bottom
 	if ((ball.getPosition().y < ball.getRadius()) || (ball.getPosition().y > window.getView().getSize().y - ball.getRadius()))
 	{
+		playSound("wall");
 		ball.setPosition({ ball.getPosition().x, pl::clamp(ball.getPosition().y, ball.getRadius(), window.getView().getSize().y - ball.getRadius()) });
 		ball.setDirection(ball.getDirection() - ball.getSpin() * 0.5f);
 		ball.flipDirectionVertically();
@@ -167,11 +168,13 @@ void Game::updateBall()
 	// collision with sides
 	if (ball.getPosition().x < ball.getRadius())
 	{
+		playSound("opponent score");
 		opponent.increaseScore();
 		resetBall();
 	}
 	else if (ball.getPosition().x > window.getView().getSize().x - ball.getRadius())
 	{
+		playSound("player score");
 		player.increaseScore();
 		resetBall();
 	}
@@ -183,6 +186,7 @@ void Game::updateBall()
 			(ball.getPosition().x > pl::Anchor::Global::getCenterRight(playerGraphic).x) &&
 			(ball.getDirection() > 180.f))
 		{
+			playSound("paddle");
 			ball.setPosition({ pl::Anchor::Global::getCenterRight(playerGraphic).x + ball.getRadius(), ball.getPosition().y });
 			ball.changeSpeed(25.f);
 			ball.setSpin(ball.getSpin() * 0.25f);
@@ -211,6 +215,7 @@ void Game::updateBall()
 			(ball.getPosition().x < pl::Anchor::Global::getCenterLeft(opponentGraphic).x) &&
 			(ball.getDirection() < 180.f))
 		{
+			playSound("paddle");
 			ball.setPosition({ pl::Anchor::Global::getCenterLeft(opponentGraphic).x - ball.getRadius(), ball.getPosition().y });
 			ball.changeSpeed(25.f);
 			ball.setSpin(ball.getSpin() * 0.25f);
@@ -240,4 +245,10 @@ void Game::updateScores()
 {
 	scores.updatePlayer(player.getScore());
 	scores.updateOpponent(opponent.getScore());
+}
+
+void Game::playSound(const std::string& soundName)
+{
+	sound.setBuffer(resources.getSoundBuffer(soundName));
+	sound.play();
 }
