@@ -194,6 +194,7 @@ void Game::updateBall()
 			ball.setDirection(ball.getDirection() - ball.getSpin());
 			ball.flipDirectionHorizontally();
 			ball.changeSpin(-5.f * player.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
+			graphics.startBallAnimHit();
 		}
 		else if (graphics.isToTheRightOfPlayerBack(ball.getPosition().x))
 		{
@@ -226,6 +227,7 @@ void Game::updateBall()
 			ball.setDirection(ball.getDirection() - ball.getSpin());
 			ball.flipDirectionHorizontally();
 			ball.changeSpin(5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
+			graphics.startBallAnimHit();
 		}
 		else if (graphics.isToTheLeftOfOpponentBack(ball.getPosition().x))
 		{

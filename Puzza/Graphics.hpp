@@ -51,11 +51,17 @@ public:
 
 	float getPaddleReachFromCenter() const;
 
+	void startBallAnimHit();
+
 private:
 	const float m_paddleWidth;
 
 	float m_paddleReachFromCenter;
 	sf::Sprite m_ball, m_player, m_opponent;
+
+	bool m_animBallHit;
+
+	float m_animFrameBall;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

@@ -6,6 +6,8 @@ Graphics::Graphics(Resources& resources) :
 m_ball(resources.getTexture("spritesheet")),
 m_player(resources.getTexture("spritesheet")),
 m_opponent(resources.getTexture("spritesheet")),
+m_animBallHit(false),
+m_animFrameBall(0.f),
 m_paddleReachFromCenter(0.f),
 m_paddleWidth(20.f)
 {
@@ -34,6 +36,23 @@ void Graphics::updateBall(const Ball& ball, const float dt)
 {
 	m_ball.setPosition(ball.getPosition());
 	m_ball.rotate(0.125f * ball.getSpin() * ball.getSpeed() * dt);
+
+	const float ballAnimSpeed = 18.f; // fps
+
+	m_animFrameBall += ballAnimSpeed * dt;
+
+	if (m_animBallHit)
+	{
+		if (m_animFrameBall < 8.f)
+			m_animFrameBall = 8.f;
+		else if (m_animFrameBall >= 16.f)
+			m_animBallHit = false;
+	}
+
+	if (!m_animBallHit && m_animFrameBall >= 8.f)
+		m_animFrameBall = 0.f;
+
+	m_ball.setTextureRect({ sf::Vector2i{ static_cast<int>(m_animFrameBall) * 24, 200 }, sf::Vector2i{ 24, 24 } });
 }
 
 void Graphics::updateSize(const sf::View& view)
@@ -139,6 +158,11 @@ float Graphics::getBallDistanceLeftOfOpponent() const
 float Graphics::getPaddleReachFromCenter() const
 {
 	return m_paddleReachFromCenter;
+}
+
+void Graphics::startBallAnimHit()
+{
+	m_animBallHit = true;
 }
 
 void Graphics::draw(sf::RenderTarget& target, sf::RenderStates states) const
