@@ -11,9 +11,15 @@ ball(),
 player(),
 opponent(),
 sound(),
-background(window.getView().getSize())
+background(window.getView().getSize()),
+message(),
+messageBox()
 {
 	scores.setFont(resources.getFont("main"));
+	message.setFont(resources.getFont("main"));
+	message.setCharacterSize(45u);
+	message.setPosition(sf::Vector2f(window.getSize() / 2u));
+	messageBox.setFillColor(pl::Sfml::colorFromColorAndAlpha(pl::Colors::Black, 0.75));
 	window.setMouseCursorVisible(false);
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
 	opponent.setAcceleration(100.f);
@@ -50,6 +56,29 @@ void Game::run()
 					reset();
 					ball.setSpeed(0.f);
 				}
+				else if (event.key.code == sf::Keyboard::Space)
+				{
+					switch (state)
+					{
+					case State::Ready:
+						resetBall();
+					case State::Paused:
+						state = State::Running;
+						break;
+					case State::Over:
+						state = State::Ready;
+						reset();
+						break;
+					case State::Running:
+					default:
+						state = State::Paused;
+						break;
+					}
+				}
+				else if (event.key.code == sf::Keyboard::Q)
+				{
+					state = State::Over;
+				}
 			}
 		}
 
@@ -64,11 +93,37 @@ void Game::run()
 			" | Ball Spin: " + pl::stringFrom(ball.getSpin())
 			);
 
+		// update message
+		switch (state)
+		{
+		case State::Ready:
+			message.setString("Press Space to start");
+			break;
+		case State::Paused:
+			message.setString("Paused - Press Space to continue");
+			break;
+		case State::Over:
+			message.setString("Game over! Press Space to reset");
+			break;
+		default:
+			message.setString("");
+		}
+		const sf::Vector2f messageBoxPadding(4.f, 2.f);
+		message.setOrigin(pl::Anchor::Local::getCenter(message));
+		messageBox.setPosition(sf::Vector2f(window.getSize() / 2u) - messageBoxPadding);
+		messageBox.setSize(pl::Anchor::Local::getBottomRight(message) - pl::Anchor::Local::getTopLeft(message) + messageBoxPadding * 2.f);
+		messageBox.setOrigin(pl::Anchor::Local::getCenter(messageBox));
+
 		// update display
 		window.clear();
 		window.draw(background);
 		window.draw(graphics);
 		window.draw(scores);
+		if (state != State::Running)
+		{
+			window.draw(messageBox);
+			window.draw(message);
+		}
 		window.display();
 	}
 }
@@ -92,8 +147,12 @@ void Game::update()
 {
 	updatePlayerPaddle();
 	updateOpponentPaddle();
-	updateBall();
+	if (state == State::Running)
+		updateBall();
 	updateScores();
+
+	// update ball graphic
+	graphics.updateBall(ball, timestep.getStepAsFloat());
 }
 
 void Game::updatePlayerPaddle()
@@ -248,9 +307,6 @@ void Game::updateBall()
 			}
 		}
 	}
-
-	// update graphic
-	graphics.updateBall(ball, timestep.getStepAsFloat());
 }
 
 void Game::updateScores()

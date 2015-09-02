@@ -19,6 +19,14 @@ public:
 	void run();
 
 private:
+	enum class State
+	{
+		Ready,
+		Running,
+		Paused,
+		Over
+	} state = State::Ready;
+
 	Resources resources;
 	Graphics graphics;
 	const std::string windowTitle;
@@ -30,6 +38,8 @@ private:
 	Paddle opponent;
 	sf::Sound sound;
 	sf::RectangleShape background;
+	sf::Text message;
+	sf::RectangleShape messageBox;
 
 	void reset();
 	void resetBall();
