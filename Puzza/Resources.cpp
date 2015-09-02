@@ -12,4 +12,7 @@ Resources::Resources()
 	addSoundBuffer("opponent score", resourcePath + "opponent.wav");
 
 	addTexture("spritesheet", resourcePath + "spritesheet.png");
+	addTexture("background tile", resourcePath + "backgroundtile.png");
+
+	getTexture("background tile").setRepeated(true);
 }

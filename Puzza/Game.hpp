@@ -29,6 +29,7 @@ private:
 	Paddle player;
 	Paddle opponent;
 	sf::Sound sound;
+	sf::RectangleShape background;
 
 	void reset();
 	void resetBall();

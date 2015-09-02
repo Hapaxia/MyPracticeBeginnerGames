@@ -15,7 +15,6 @@
 class Graphics : public sf::Drawable
 {
 public:
-
 	Graphics(Resources& resources);
 	void updatePlayer(const sf::View& view, const Paddle& player, float dt);
 	void updateOpponent(const sf::View& view, const Paddle& opponent, float dt);

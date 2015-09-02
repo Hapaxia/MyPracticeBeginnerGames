@@ -10,7 +10,8 @@ scores(window),
 ball(),
 player(),
 opponent(),
-sound()
+sound(),
+background(window.getView().getSize())
 {
 	scores.setFont(resources.getFont("main"));
 	window.setMouseCursorVisible(false);
@@ -20,6 +21,8 @@ sound()
 	opponent.setMaximumSpeed(1.25f);
 	timestep.setStep(1.0 / 500.0); // decrease timestep size to a 500th of a second to catch collisions at higher ball speeds
 	sound.setBuffer(resources.getSoundBuffer("paddle"));
+	background.setTexture(&resources.getTexture("background tile"));
+	background.setTextureRect({ sf::Vector2i{ 0, 0 }, sf::Vector2i(window.getSize()) / 1 });
 }
 
 void Game::run()
@@ -63,9 +66,7 @@ void Game::run()
 
 		// update display
 		window.clear();
-		//window.draw(ballGraphic);
-		//window.draw(playerGraphic);
-		//window.draw(opponentGraphic);
+		window.draw(background);
 		window.draw(graphics);
 		window.draw(scores);
 		window.display();
