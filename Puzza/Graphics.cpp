@@ -7,7 +7,11 @@ m_ball(resources.getTexture("spritesheet")),
 m_player(resources.getTexture("spritesheet")),
 m_opponent(resources.getTexture("spritesheet")),
 m_animBallHit(false),
+m_animPlayerHit(false),
+m_animOpponentHit(false),
 m_animFrameBall(0.f),
+m_animFramePlayer(0.f),
+m_animFrameOpponent(0.f),
 m_paddleReachFromCenter(0.f),
 m_paddleWidth(20.f)
 {
@@ -20,16 +24,46 @@ m_paddleWidth(20.f)
 	m_opponent.setOrigin(getCenterRight(m_opponent));
 }
 
-void Graphics::updatePlayer(const sf::View& view, const Paddle& player)
+void Graphics::updatePlayer(const sf::View& view, const Paddle& player, const float dt)
 {
 	updateSize(view);
 	m_player.setPosition(sf::Vector2f{ 0.f, (m_paddleReachFromCenter * player.getPosition()) + (view.getSize().y / 2) });
+
+	if (!m_animPlayerHit)
+		return;
+
+	const float playerAnimSpeed = 24.f; // fps
+
+	m_animFramePlayer += playerAnimSpeed * dt;
+
+	if (m_animFramePlayer >= 16.f)
+	{
+		m_animFramePlayer = 0.f;
+		m_animPlayerHit = false;
+	}
+
+	m_player.setTextureRect({ sf::Vector2i{ static_cast<int>(m_animFramePlayer) * 60, 0 }, sf::Vector2i{ 60, 100 } });
 }
 
-void Graphics::updateOpponent(const sf::View& view, const Paddle& opponent)
+void Graphics::updateOpponent(const sf::View& view, const Paddle& opponent, const float dt)
 {
 	updateSize(view);
 	m_opponent.setPosition(sf::Vector2f{ view.getSize().x, (m_paddleReachFromCenter * opponent.getPosition()) + (view.getSize().y / 2) });
+
+	if (!m_animOpponentHit)
+		return;
+
+	const float opponentAnimSpeed = 24.f; // fps
+
+	m_animFrameOpponent += opponentAnimSpeed * dt;
+
+	if (m_animFrameOpponent >= 16.f)
+	{
+		m_animFrameOpponent = 0.f;
+		m_animOpponentHit = false;
+	}
+
+	m_opponent.setTextureRect({ sf::Vector2i{ static_cast<int>(m_animFrameOpponent) * 60, 100 }, sf::Vector2i{ 60, 100 } });
 }
 
 void Graphics::updateBall(const Ball& ball, const float dt)
@@ -163,6 +197,16 @@ float Graphics::getPaddleReachFromCenter() const
 void Graphics::startBallAnimHit()
 {
 	m_animBallHit = true;
+}
+
+void Graphics::startPlayerAnimHit()
+{
+	m_animPlayerHit = true;
+}
+
+void Graphics::startOpponentAnimHit()
+{
+	m_animOpponentHit = true;
 }
 
 void Graphics::draw(sf::RenderTarget& target, sf::RenderStates states) const

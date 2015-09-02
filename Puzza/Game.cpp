@@ -105,7 +105,7 @@ void Game::updatePlayerPaddle()
 	player.update(timestep.getStepAsFloat());
 
 	// update graphic
-	graphics.updatePlayer(window.getView(), player);
+	graphics.updatePlayer(window.getView(), player, timestep.getStepAsFloat());
 }
 
 void Game::updateOpponentPaddle()
@@ -127,7 +127,7 @@ void Game::updateOpponentPaddle()
 	opponent.update(timestep.getStepAsFloat());
 
 	// update graphic
-	graphics.updateOpponent(window.getView(), opponent);
+	graphics.updateOpponent(window.getView(), opponent, timestep.getStepAsFloat());
 }
 
 void Game::updateBall()
@@ -195,6 +195,7 @@ void Game::updateBall()
 			ball.flipDirectionHorizontally();
 			ball.changeSpin(-5.f * player.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 			graphics.startBallAnimHit();
+			graphics.startPlayerAnimHit();
 		}
 		else if (graphics.isToTheRightOfPlayerBack(ball.getPosition().x))
 		{
@@ -228,6 +229,7 @@ void Game::updateBall()
 			ball.flipDirectionHorizontally();
 			ball.changeSpin(5.f * opponent.getSpeed() * ball.getSpeed() * timestep.getStepAsFloat());
 			graphics.startBallAnimHit();
+			graphics.startOpponentAnimHit();
 		}
 		else if (graphics.isToTheLeftOfOpponentBack(ball.getPosition().x))
 		{

@@ -17,8 +17,8 @@ class Graphics : public sf::Drawable
 public:
 
 	Graphics(Resources& resources);
-	void updatePlayer(const sf::View& view, const Paddle& player);
-	void updateOpponent(const sf::View& view, const Paddle& opponent);
+	void updatePlayer(const sf::View& view, const Paddle& player, float dt);
+	void updateOpponent(const sf::View& view, const Paddle& opponent, float dt);
 	void updateBall(const Ball& ball, float dt);
 	void updateSize(const sf::View& view);
 
@@ -52,6 +52,8 @@ public:
 	float getPaddleReachFromCenter() const;
 
 	void startBallAnimHit();
+	void startPlayerAnimHit();
+	void startOpponentAnimHit();
 
 private:
 	const float m_paddleWidth;
@@ -59,9 +61,8 @@ private:
 	float m_paddleReachFromCenter;
 	sf::Sprite m_ball, m_player, m_opponent;
 
-	bool m_animBallHit;
-
-	float m_animFrameBall;
+	bool m_animBallHit, m_animPlayerHit, m_animOpponentHit;
+	float m_animFrameBall, m_animFramePlayer, m_animFrameOpponent;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
