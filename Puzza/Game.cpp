@@ -4,6 +4,7 @@ Game::Game():
 resources(),
 windowTitle("Puzza (WIP:2015) by Hapax (github.com/Hapaxia)"),
 graphics(resources),
+music(),
 timestep(),
 window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default),
 scores(window),
@@ -13,7 +14,8 @@ opponent(),
 sound(),
 background(window.getView().getSize()),
 message(),
-messageBox()
+messageBox(),
+isMuted(false)
 {
 	scores.setFont(resources.getFont("main"));
 	message.setFont(resources.getFont("main"));
@@ -29,6 +31,9 @@ messageBox()
 	sound.setBuffer(resources.getSoundBuffer("paddle"));
 	background.setTexture(&resources.getTexture("background tile"));
 	background.setTextureRect({ sf::Vector2i{ 0, 0 }, sf::Vector2i(window.getSize()) / 1 });
+	music.play(Music::Track::Ready);
+	sound.setVolume(35.f);
+	sf::Listener::setGlobalVolume(100.f);
 }
 
 void Game::run()
@@ -56,27 +61,41 @@ void Game::run()
 					reset();
 					ball.setSpeed(0.f);
 				}
+				else if (event.key.code == sf::Keyboard::M) // mutes/unmutes all sound
+				{
+					pl::toggle(isMuted);
+					if (isMuted)
+						sf::Listener::setGlobalVolume(0.f);
+					else
+						sf::Listener::setGlobalVolume(100.f);
+				}
 				else if (event.key.code == sf::Keyboard::Space)
 				{
 					switch (state)
 					{
 					case State::Ready:
 						resetBall();
+						music.play(Music::Track::Play);
 					case State::Paused:
+						music.undim();
 						state = State::Running;
 						break;
 					case State::Over:
-						state = State::Ready;
 						reset();
+						music.play(Music::Track::Ready);
+						music.undim();
+						state = State::Ready;
 						break;
 					case State::Running:
 					default:
+						music.dim();
 						state = State::Paused;
 						break;
 					}
 				}
 				else if (event.key.code == sf::Keyboard::Q)
 				{
+					music.dim();
 					state = State::Over;
 				}
 			}
@@ -113,6 +132,9 @@ void Game::run()
 		messageBox.setPosition(sf::Vector2f(window.getSize() / 2u) - messageBoxPadding);
 		messageBox.setSize(pl::Anchor::Local::getBottomRight(message) - pl::Anchor::Local::getTopLeft(message) + messageBoxPadding * 2.f);
 		messageBox.setOrigin(pl::Anchor::Local::getCenter(messageBox));
+
+		// update music
+		music.update();
 
 		// update display
 		window.clear();
