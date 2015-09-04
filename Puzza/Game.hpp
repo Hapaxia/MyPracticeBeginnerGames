@@ -11,6 +11,7 @@
 #include "Paddle.hpp"
 #include "Resources.hpp"
 #include "Graphics.hpp"
+#include "Music.hpp"
 
 class Game
 {
@@ -29,6 +30,7 @@ private:
 
 	Resources resources;
 	Graphics graphics;
+	Music music;
 	const std::string windowTitle;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
@@ -40,6 +42,7 @@ private:
 	sf::RectangleShape background;
 	sf::Text message;
 	sf::RectangleShape messageBox;
+	bool isMuted;
 
 	void reset();
 	void resetBall();
