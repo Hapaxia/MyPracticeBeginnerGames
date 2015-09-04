@@ -8,6 +8,7 @@ m_pMusic(&m_ready),
 m_isDimmed(false)
 {
 	const std::string resourcePath = "resources/";
+	// music used with permission by Hapax Perplexia (https://soundcloud.com/hapaxperplexia/puzza-soundtrack)
 	if (!m_ready.openFromFile(resourcePath + "puzza-ready.ogg") ||
 		!m_play.openFromFile(resourcePath + "puzza-play.ogg"))
 		throw("Could not find music.");
