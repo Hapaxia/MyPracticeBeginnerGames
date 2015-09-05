@@ -1,7 +1,6 @@
 #ifndef PUZZA_GAME_HPP
 #define PUZZA_GAME_HPP
 
-#include <DevSfml.hpp>
 #include <PlinthSfml.hpp>
 #include <Kairos.hpp>
 #include <SFML/Graphics.hpp>
@@ -43,6 +42,7 @@ private:
 	sf::Text message;
 	sf::RectangleShape messageBox;
 	bool isMuted;
+	sf::Text url;
 
 	void reset();
 	void resetBall();

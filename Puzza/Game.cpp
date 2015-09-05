@@ -2,7 +2,7 @@
 
 Game::Game():
 resources(),
-windowTitle("Puzza (WIP:2015) by Hapax (github.com/Hapaxia)"),
+windowTitle("Puzza"),
 graphics(resources),
 music(),
 timestep(),
@@ -15,13 +15,20 @@ sound(),
 background(window.getView().getSize()),
 message(),
 messageBox(),
-isMuted(false)
+isMuted(false),
+url()
 {
 	scores.setFont(resources.getFont("main"));
 	message.setFont(resources.getFont("main"));
 	message.setCharacterSize(45u);
 	message.setPosition(sf::Vector2f(window.getSize() / 2u));
 	messageBox.setFillColor(pl::Sfml::colorFromColorAndAlpha(pl::Colors::Black, 0.75));
+	url.setFont(resources.getFont("main"));
+	url.setCharacterSize(12u);
+	url.setString("Source available at https://github.com/Hapaxia/MyPracticeBeginnerGames");
+	url.setOrigin(pl::Sfml::floorVector(pl::Anchor::Local::getBottomCenter(url)));
+	url.setPosition(floor(window.getView().getSize().x / 2.f), window.getView().getSize().y);
+	url.setColor(pl::Colors::DarkGreen);
 	window.setMouseCursorVisible(false);
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
 	opponent.setAcceleration(100.f);
@@ -32,7 +39,7 @@ isMuted(false)
 	background.setTexture(&resources.getTexture("background tile"));
 	background.setTextureRect({ sf::Vector2i{ 0, 0 }, sf::Vector2i(window.getSize()) / 1 });
 	music.play(Music::Track::Ready);
-	sound.setVolume(35.f);
+	sound.setVolume(30.f);
 	sf::Listener::setGlobalVolume(100.f);
 }
 
@@ -44,22 +51,17 @@ void Game::run()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			if (DEV::eventIsDefaultCloseWindow(event))
+			if (event.type == sf::Event::Closed)
 				window.close();
 			else if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::F12) // forces program error
-					throw "Forced exception";
-				else if (event.key.code == sf::Keyboard::F1) // stops the ball
-					ball.setSpeed(0.f);
-				else if (event.key.code == sf::Keyboard::F2) // resets and restarts the ball in the default position, direction and speed
-					resetBall();
-				else if (event.key.code == sf::Keyboard::F5) // resets and restarts the game (ball and scores)
-					reset();
-				else if (event.key.code == sf::Keyboard::F6) // resets the game (ball and scores). ball is stopped
+				if (event.key.code == sf::Keyboard::Escape) // ends current game
 				{
-					reset();
-					ball.setSpeed(0.f);
+					if (state != State::Ready)
+					{
+						music.dim();
+						state = State::Over;
+					}
 				}
 				else if (event.key.code == sf::Keyboard::M) // mutes/unmutes all sound
 				{
@@ -69,7 +71,7 @@ void Game::run()
 					else
 						sf::Listener::setGlobalVolume(100.f);
 				}
-				else if (event.key.code == sf::Keyboard::Space)
+				else if (event.key.code == sf::Keyboard::Space) // progresses state
 				{
 					switch (state)
 					{
@@ -93,11 +95,6 @@ void Game::run()
 						break;
 					}
 				}
-				else if (event.key.code == sf::Keyboard::Q)
-				{
-					music.dim();
-					state = State::Over;
-				}
 			}
 		}
 
@@ -105,12 +102,6 @@ void Game::run()
 		timestep.addFrame();
 		while (timestep.isUpdateRequired())
 			update();
-
-		// update window title
-		window.setTitle(windowTitle +
-			" | Ball Speed: " + pl::stringFrom(static_cast<int>(ball.getSpeed())) +
-			" | Ball Spin: " + pl::stringFrom(ball.getSpin())
-			);
 
 		// update message
 		switch (state)
@@ -141,6 +132,7 @@ void Game::run()
 		window.draw(background);
 		window.draw(graphics);
 		window.draw(scores);
+		window.draw(url);
 		if (state != State::Running)
 		{
 			window.draw(messageBox);
@@ -214,20 +206,6 @@ void Game::updateOpponentPaddle()
 
 void Game::updateBall()
 {
-	// input
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		ball.changeSpeed(3.f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		ball.changeSpeed(-3.f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		ball.setDirection(ball.getDirection() + 0.3f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		ball.setDirection(ball.getDirection() - 0.3f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
-		ball.changeSpin(0.3f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
-		ball.changeSpin(-0.3f);
-
 	// update
 	ball.update(timestep.getStepAsFloat());
 
