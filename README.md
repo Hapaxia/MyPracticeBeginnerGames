@@ -6,7 +6,7 @@ Work(s) In Progress:
 - **???**  
 ???
 
-External libraries will be used for the development of these games:
+External libraries (all open-source) will be used for the development of these games:
 - [SFML]
 - [Dev]
 - [Plinth]
