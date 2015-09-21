@@ -5,6 +5,9 @@
 #include <PlinthSfml.hpp>
 #include <Kairos.hpp>
 #include <SFML/Graphics.hpp>
+#include "Graphics.hpp"
+#include "Player.hpp"
+#include <Plinth/Sfml/KeyMap.hpp>
 
 class Game
 {
@@ -21,9 +24,13 @@ private:
 		Over
 	} state;
 
+	Graphics graphics;
 	const std::string windowTitle;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
+	std::string currentStateString;
+	Player player;
+	pl::KeyMap keys;
 
 	void reset();
 	void update();

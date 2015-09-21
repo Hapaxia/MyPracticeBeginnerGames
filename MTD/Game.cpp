@@ -1,11 +1,17 @@
 #include "Game.hpp"
 
 Game::Game()
-: windowTitle("MTD")
-, timestep()
-, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
-, state(State::Ready)
+	: windowTitle("MTD")
+	, timestep()
+	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
+	, state(State::Ready)
+	, currentStateString("Ready")
+	, graphics()
+	, player(window, timestep.getStep(), graphics)
+	, keys()
 {
+	keys.addKey("player left", sf::Keyboard::A);
+	keys.addKey("player right", sf::Keyboard::D);
 }
 
 void Game::run()
@@ -20,16 +26,12 @@ void Game::run()
 				window.close();
 			else if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::Escape) // ends current game (or closes if state is currently "over")
+				if (event.key.code == sf::Keyboard::Escape) // ends current game (or closes if state is currently "over" or "ready")
 				{
-					if (state == State::Over)
-					{
+					if (state == State::Over || state == State::Ready)
 						window.close();
-					}
-					if (state != State::Ready)
-					{
+					else
 						state = State::Over;
-					}
 				}
 				else if (event.key.code == sf::Keyboard::Space) // progresses state
 				{
@@ -50,24 +52,23 @@ void Game::run()
 					}
 				}
 
-				// output current state to console whenever a key is pressed
+				// update current state string whenever a key is pressed (currently, state can only change by pressing keys)
 				switch (state)
 				{
 				case State::Ready:
-					DEV::printLine("State: Ready");
+					currentStateString = "State: Ready";
 					break;
 				case State::Paused:
-					DEV::printLine("State: Paused");
+					currentStateString = "State: Paused";
 					break;
 				case State::Over:
-					DEV::printLine("State: Over");
+					currentStateString = "State: Over";
 					break;
 				case State::Running:
-					DEV::printLine("State: Running");
+					currentStateString = "State: Running";
 					break;
 				default:
-					DEV::printLine("State: [unknown]");
-					break;
+					currentStateString = "State: [unknown]";
 				}
 			}
 		}
@@ -77,9 +78,12 @@ void Game::run()
 		while (timestep.isUpdateRequired())
 			update();
 
+		// update window title
+		window.setTitle(windowTitle + " || State: " + currentStateString);
+
 		// update display
 		window.clear();
-		//window.draw();
+		window.draw(graphics);
 		window.display();
 	}
 }
@@ -90,4 +94,22 @@ void Game::reset()
 
 void Game::update()
 {
+	// input
+	int controlDirection = 0;
+	if (sf::Keyboard::isKeyPressed(keys.getKey("player left")))
+		--controlDirection;
+	if (sf::Keyboard::isKeyPressed(keys.getKey("player right")))
+		++controlDirection;
+
+	// update
+	if (controlDirection != 0)
+	{
+		if (controlDirection > 0)
+			player.move(Player::Direction::Right);
+		else
+			player.move(Player::Direction::Left);
+	}
+
+	// graphics
+	graphics.updatePlayer(window.getView(), player);
 }
