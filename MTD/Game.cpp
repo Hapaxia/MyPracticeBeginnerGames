@@ -5,13 +5,24 @@ Game::Game()
 	, timestep()
 	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
 	, state(State::Ready)
-	, currentStateString("Ready")
+	, currentStateString("State: Ready")
 	, graphics()
 	, player(window, timestep.getStep(), graphics)
+	, bullets()
 	, keys()
 {
-	keys.addKey("player left", sf::Keyboard::A);
-	keys.addKey("player right", sf::Keyboard::D);
+	/*
+	keys.addKey("player left",    sf::Keyboard::Left);
+	keys.addKey("player right",   sf::Keyboard::Right);
+	keys.addKey("player shoot",   sf::Keyboard::Space);
+	keys.addKey("progress state", sf::Keyboard::Tab);
+	keys.addKey("quit",           sf::Keyboard::Escape);
+	*/
+	keys.addKey(sf::Keyboard::Left,   "player left");
+	keys.addKey(sf::Keyboard::Right,  "player right");
+	keys.addKey(sf::Keyboard::Space,  "player shoot");
+	keys.addKey(sf::Keyboard::Tab,    "progress state");
+	keys.addKey(sf::Keyboard::Escape, "quit");
 }
 
 void Game::run()
@@ -26,14 +37,14 @@ void Game::run()
 				window.close();
 			else if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::Escape) // ends current game (or closes if state is currently "over" or "ready")
+				if (event.key.code == keys.getKey("quit")) // ends current game (or closes if state is currently "over" or "ready")
 				{
 					if (state == State::Over || state == State::Ready)
 						window.close();
 					else
 						state = State::Over;
 				}
-				else if (event.key.code == sf::Keyboard::Space) // progresses state
+				else if (event.key.code == keys.getKey("progress state")) // progresses state
 				{
 					switch (state)
 					{
@@ -75,7 +86,7 @@ void Game::run()
 
 		// main updates
 		timestep.addFrame();
-		while (timestep.isUpdateRequired())
+		while (timestep.isUpdateRequired() && state == State::Running)
 			update();
 
 		// update window title
@@ -100,6 +111,8 @@ void Game::update()
 		--controlDirection;
 	if (sf::Keyboard::isKeyPressed(keys.getKey("player right")))
 		++controlDirection;
+	if (sf::Keyboard::isKeyPressed(keys.getKey("player shoot")))
+		bullets.shoot({ player.getPosition(), window.getView().getSize().y });
 
 	// update
 	if (controlDirection != 0)
@@ -109,7 +122,9 @@ void Game::update()
 		else
 			player.move(Player::Direction::Left);
 	}
+	bullets.update(timestep.getStep());
 
 	// graphics
 	graphics.updatePlayer(window.getView(), player);
+	graphics.updateBullets(window.getView(), bullets);
 }

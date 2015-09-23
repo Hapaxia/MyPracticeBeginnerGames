@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "Graphics.hpp"
 #include "Player.hpp"
+#include "Bullets.hpp"
 #include <Plinth/Sfml/KeyMap.hpp>
 
 class Game
@@ -30,6 +31,7 @@ private:
 	sf::RenderWindow window;
 	std::string currentStateString;
 	Player player;
+	Bullets bullets;
 	pl::KeyMap keys;
 
 	void reset();

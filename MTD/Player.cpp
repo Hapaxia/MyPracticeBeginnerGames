@@ -1,7 +1,7 @@
 #include "Player.hpp"
 #include <Plinth/Sfml/Generic.hpp>
 
-Player::Player(const sf::RenderWindow& window, double dt, const Graphics& graphics)
+Player::Player(const sf::RenderWindow& window, const double dt, const Graphics& graphics)
 	: m_dt(dt)
 	, m_speed(300.0)
 	, m_positionLimits({ 0 + graphics.getPlayerSize().x / 2.f, window.getSize().x - graphics.getPlayerSize().x / 2.f })
@@ -9,7 +9,7 @@ Player::Player(const sf::RenderWindow& window, double dt, const Graphics& graphi
 {
 }
 
-void Player::move(Direction direction)
+void Player::move(const Direction direction)
 {
 	double movement;
 	switch (direction)
