@@ -4,20 +4,15 @@ Game::Game()
 	: windowTitle("MTD")
 	, timestep()
 	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
-	, state(State::Ready)
-	, currentStateString("Ready")
+	, state(State::Running)
+	, currentStateString("Running")
+	//, state(State::Ready)
+	//, currentStateString("Ready")
 	, graphics()
 	, player(window, timestep.getStep(), graphics)
 	, bullets()
 	, keys()
 {
-	/*
-	keys.addKey("player left",    sf::Keyboard::Left);
-	keys.addKey("player right",   sf::Keyboard::Right);
-	keys.addKey("player shoot",   sf::Keyboard::Space);
-	keys.addKey("progress state", sf::Keyboard::Tab);
-	keys.addKey("quit",           sf::Keyboard::Escape);
-	*/
 	keys.addKey(sf::Keyboard::Left,   "player left");
 	keys.addKey(sf::Keyboard::Right,  "player right");
 	keys.addKey(sf::Keyboard::Space,  "player shoot");
