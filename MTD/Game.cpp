@@ -5,7 +5,7 @@ Game::Game()
 	, timestep()
 	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
 	, state(State::Ready)
-	, currentStateString("State: Ready")
+	, currentStateString("Ready")
 	, graphics()
 	, player(window, timestep.getStep(), graphics)
 	, bullets()
@@ -67,19 +67,19 @@ void Game::run()
 				switch (state)
 				{
 				case State::Ready:
-					currentStateString = "State: Ready";
+					currentStateString = "Ready";
 					break;
 				case State::Paused:
-					currentStateString = "State: Paused";
+					currentStateString = "Paused";
 					break;
 				case State::Over:
-					currentStateString = "State: Over";
+					currentStateString = "Over";
 					break;
 				case State::Running:
-					currentStateString = "State: Running";
+					currentStateString = "Running";
 					break;
 				default:
-					currentStateString = "State: [unknown]";
+					currentStateString = "[unknown]";
 				}
 			}
 		}
