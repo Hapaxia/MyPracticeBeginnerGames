@@ -8,6 +8,7 @@
 #include "Graphics.hpp"
 #include "Player.hpp"
 #include "Bullets.hpp"
+#include "Enemies.hpp"
 #include <Plinth/Sfml/KeyMap.hpp>
 
 class Game
@@ -32,6 +33,7 @@ private:
 	std::string currentStateString;
 	Player player;
 	Bullets bullets;
+	Enemies enemies;
 	pl::KeyMap keys;
 
 	void reset();

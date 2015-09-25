@@ -5,7 +5,7 @@ Bullet::Bullet(const pl::Vector2d position)
 {
 }
 
-void Bullet::update(const double movement)
+void Bullet::move(const double movement)
 {
 	m_position.y -= movement;
 }

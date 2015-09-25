@@ -11,6 +11,7 @@ Game::Game()
 	, graphics()
 	, player(window, timestep.getStep(), graphics)
 	, bullets()
+	, enemies(window)
 	, keys()
 {
 	keys.addKey(sf::Keyboard::Left,   "player left");
@@ -18,6 +19,7 @@ Game::Game()
 	keys.addKey(sf::Keyboard::Space,  "player shoot");
 	keys.addKey(sf::Keyboard::Tab,    "progress state");
 	keys.addKey(sf::Keyboard::Escape, "quit");
+	keys.addKey(sf::Keyboard::Return, "toggle enemy direction");
 }
 
 void Game::run()
@@ -57,6 +59,8 @@ void Game::run()
 						break;
 					}
 				}
+				else if (event.key.code == keys.getKey("toggle enemy direction")) // toggle enemies' horizontal direction
+					enemies.toggleDirection();
 
 				// update current state string whenever a key is pressed (currently, state can only change by pressing keys)
 				switch (state)
@@ -118,9 +122,11 @@ void Game::update()
 			player.move(Player::Direction::Left);
 	}
 	bullets.update(timestep.getStep());
+	enemies.update(timestep.getStep());
 
 	// graphics
 	graphics.updateView(window.getView());
 	graphics.updatePlayer(player);
 	graphics.updateBullets(bullets);
+	graphics.updateEnemies(enemies);
 }

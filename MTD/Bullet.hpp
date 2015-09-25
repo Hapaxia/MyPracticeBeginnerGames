@@ -7,7 +7,7 @@ class Bullet
 {
 public:
 	Bullet(pl::Vector2d position);
-	void update(double movement);
+	void move(double movement);
 	pl::Vector2d getPosition() const;
 
 private:
