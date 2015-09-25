@@ -17,12 +17,17 @@ Graphics::Graphics()
 	m_player.setOrigin(pl::Anchor::Local::getBottomCenter(m_player));
 }
 
-void Graphics::updatePlayer(const sf::View& view, const Player& player)
+void Graphics::updateView(const sf::View& view)
 {
-	m_player.setPosition(static_cast<float>(player.getPosition()), view.getSize().y);
+	m_view = view;
 }
 
-void Graphics::updateBullets(const sf::View& view, const Bullets& bullets)
+void Graphics::updatePlayer(const Player& player)
+{
+	m_player.setPosition(static_cast<float>(player.getPosition()), m_view.getSize().y);
+}
+
+void Graphics::updateBullets(const Bullets& bullets)
 {
 	const sf::Vector2f bulletSize{ 8.f, 24.f };
 	m_bullets.resize(bullets.size(), sf::RectangleShape(bulletSize));

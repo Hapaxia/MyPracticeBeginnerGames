@@ -120,6 +120,7 @@ void Game::update()
 	bullets.update(timestep.getStep());
 
 	// graphics
-	graphics.updatePlayer(window.getView(), player);
-	graphics.updateBullets(window.getView(), bullets);
+	graphics.updateView(window.getView());
+	graphics.updatePlayer(player);
+	graphics.updateBullets(bullets);
 }
