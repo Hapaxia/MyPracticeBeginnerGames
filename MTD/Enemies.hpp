@@ -10,6 +10,7 @@ class Enemies
 public:
 	Enemies(sf::RenderWindow& window);
 	void update(double dt);
+	void killEnemy(unsigned int enemyIndex);
 	std::vector<Enemy>::const_iterator begin() const { return m_enemies.begin(); }
 	std::vector<Enemy>::const_iterator end() const { return m_enemies.end(); }
 	std::size_t size() const { return m_enemies.size(); }

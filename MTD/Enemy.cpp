@@ -7,6 +7,7 @@ Enemy::Enemy(const sf::View& view, const pl::Vector2d position, pl::Vector2d siz
 	, m_positionLimits({ 0 + m_size.x / 2.0, view.getSize().x - m_size.x / 2.0 })
 	, m_isMovingRight(true)
 	, m_requiresFlipping(false)
+	, m_isAlive(true)
 {
 }
 
@@ -41,4 +42,14 @@ void Enemy::flipDirection()
 bool Enemy::requiresFlipping() const
 {
 	return m_requiresFlipping;
+}
+
+void Enemy::die()
+{
+	m_isAlive = false;
+}
+
+bool Enemy::isAlive() const
+{
+	return m_isAlive;
 }

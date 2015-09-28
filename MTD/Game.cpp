@@ -124,6 +124,47 @@ void Game::update()
 	bullets.update(timestep.getStep());
 	enemies.update(timestep.getStep());
 
+	// remove enemies hit by bullets
+	pl::AreaRange<double> bulletBoundingBox;
+	pl::AreaRange<double> enemyBoundingBox;
+	pl::Vector2d enemyCenter{ 0.0, 0.0 };
+	pl::Vector2d bulletCenter{ 0.0, 0.0 };
+	std::vector<unsigned int> enemiesToRemove;
+	std::vector<unsigned int> bulletsToRemove;
+	for (auto enemy = enemies.begin(), enemiesEnd = enemies.end(); enemy != enemiesEnd; ++enemy)
+	{
+		if (!enemy->isAlive())
+			continue;
+		enemyCenter = enemy->getSize() / 2.0;
+		enemyBoundingBox.setLeftBottom(enemy->getPosition() - enemyCenter);
+		enemyBoundingBox.setRightTop(enemy->getPosition() + enemyCenter);
+		unsigned int bulletNumber{ 0u };
+		for (auto& bullet : bullets)
+		{
+			if (!bullet.isAlive())
+				continue;
+			bulletCenter = bullet.getSize() / 2.0;
+			bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletCenter);
+			bulletBoundingBox.setRightTop(bullet.getPosition() + bulletCenter);
+			if (pl::areOverlapping(enemyBoundingBox, bulletBoundingBox))
+			{
+				auto findEnemyIt = std::find(enemiesToRemove.begin(), enemiesToRemove.end(), enemy - enemies.begin());
+				if (findEnemyIt == enemiesToRemove.end())
+					enemiesToRemove.emplace_back(enemy - enemies.begin());
+				auto findBulletIt = std::find(bulletsToRemove.begin(), bulletsToRemove.end(), bulletNumber);
+				if (findBulletIt == bulletsToRemove.end())
+					bulletsToRemove.emplace_back(bulletNumber);
+			}
+			++bulletNumber;
+		}
+	}
+	for (auto& enemyToRemove : enemiesToRemove)
+		enemies.killEnemy(enemyToRemove);
+	for (auto& bulletToRemove : bulletsToRemove)
+		bullets.killBullet(bulletToRemove);
+
+
+
 	// graphics
 	graphics.updateView(window.getView());
 	graphics.updatePlayer(player);

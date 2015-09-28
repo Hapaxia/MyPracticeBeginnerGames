@@ -10,6 +10,7 @@
 #include "Bullets.hpp"
 #include "Enemies.hpp"
 #include <Plinth/Sfml/KeyMap.hpp>
+#include <vector>
 
 class Game
 {

@@ -10,6 +10,7 @@ public:
 	Bullets();
 	void shoot(pl::Vector2d position);
 	void update(double dt);
+	void killBullet(unsigned int bulletIndex);
 	std::list<Bullet>::const_iterator begin() const { return m_bullets.begin(); }
 	std::list<Bullet>::const_iterator end() const { return m_bullets.end(); }
 	std::size_t size() const { return m_bullets.size(); }

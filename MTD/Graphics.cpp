@@ -31,15 +31,21 @@ void Graphics::updatePlayer(const Player& player)
 
 void Graphics::updateBullets(const Bullets& bullets)
 {
-	const sf::Vector2f bulletSize{ 8.f, 24.f };
-	m_bullets.resize(bullets.size(), sf::RectangleShape(bulletSize));
+	m_bullets.resize(bullets.size(), sf::RectangleShape());
 	std::vector<sf::RectangleShape>::iterator it = m_bullets.begin();
 	for (auto& bullet : bullets)
 	{
-		it->setFillColor(pl::Colors::LightYellow);
-		it->setOrigin(pl::Anchor::Local::getBottomCenter(*it));
-		it->setPosition(pl::Sfml::vector2(bullet.getPosition()));
-		++it;
+		if (bullet.isAlive())
+		{
+			const sf::Vector2f bulletSize{ pl::Sfml::vector2(bullet.getSize()) };
+			it->setSize(bulletSize);
+			it->setFillColor(pl::Colors::LightYellow);
+			it->setOrigin(pl::Anchor::Local::getBottomCenter(*it));
+			it->setPosition(pl::Sfml::vector2(bullet.getPosition()));
+			++it;
+		}
+		else
+			m_bullets.pop_back();
 	}
 }
 
@@ -49,12 +55,17 @@ void Graphics::updateEnemies(const Enemies& enemies)
 	std::vector<sf::RectangleShape>::iterator it = m_enemies.begin();
 	for (auto& enemy : enemies)
 	{
-		const sf::Vector2f enemySize{ pl::Sfml::vector2(enemy.getSize()) };
-		it->setSize(enemySize);
-		it->setFillColor(pl::Colors::Peach);
-		it->setOrigin(pl::Anchor::Local::getCenter(*it));
-		it->setPosition(pl::Sfml::vector2(enemy.getPosition()));
-		++it;
+		if (enemy.isAlive())
+		{
+			const sf::Vector2f enemySize{ pl::Sfml::vector2(enemy.getSize()) };
+			it->setSize(enemySize);
+			it->setFillColor(pl::Colors::Peach);
+			it->setOrigin(pl::Anchor::Local::getCenter(*it));
+			it->setPosition(pl::Sfml::vector2(enemy.getPosition()));
+			++it;
+		}
+		else
+			m_enemies.pop_back();
 	}
 }
 

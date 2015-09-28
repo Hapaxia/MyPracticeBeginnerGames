@@ -34,3 +34,10 @@ void Bullets::update(const double dt)
 			++it;
 	}
 }
+
+void Bullets::killBullet(const unsigned int bulletIndex)
+{
+	auto it = m_bullets.begin();
+	std::advance(it, bulletIndex);
+	it->die();
+}

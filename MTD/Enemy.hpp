@@ -14,6 +14,8 @@ public:
 	bool isMovingRight() const;
 	void flipDirection();
 	bool requiresFlipping() const;
+	void die();
+	bool isAlive() const;
 
 private:
 	const pl::Vector2d m_size;
@@ -21,6 +23,7 @@ private:
 	pl::Range<double> m_positionLimits;
 	bool m_isMovingRight;
 	bool m_requiresFlipping;
+	bool m_isAlive;
 };
 
 #endif // MTD_ENEMY_HPP
