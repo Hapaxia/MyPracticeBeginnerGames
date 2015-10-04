@@ -2,7 +2,9 @@
 #include <Plinth/Generic.hpp>
 
 Enemies::Enemies(sf::RenderWindow& window)
-	: m_enemies()
+	: m_speedIncreaseMultiplier(0.9)
+	, m_speed(40.0)
+	, m_enemies()
 	, m_view(window.getView())
 {
 	const unsigned int numberOfEnemies = 40u;
@@ -17,15 +19,14 @@ Enemies::Enemies(sf::RenderWindow& window)
 void Enemies::update(double dt)
 {
 	bool requiresDirectionFlipping = false;
-	const double enemySpeed = 50.0;
 	for (auto& enemy : m_enemies)
 	{
 		if (!enemy.isAlive())
 			continue;
 		if (enemy.isMovingRight())
-			enemy.move({ enemySpeed * dt, 0.0 });
+			enemy.move({ m_speed * dt, 0.0 });
 		else
-			enemy.move({ -enemySpeed * dt, 0.0 });
+			enemy.move({ -m_speed * dt, 0.0 });
 		if (enemy.requiresFlipping())
 			requiresDirectionFlipping = true;
 	}
@@ -35,12 +36,29 @@ void Enemies::update(double dt)
 
 void Enemies::killEnemy(const unsigned int enemyIndex)
 {
-	if (enemyIndex < m_enemies.size())
+	if (enemyIndex < m_enemies.size() && m_enemies[enemyIndex].isAlive())
+	{
 		m_enemies[enemyIndex].die();
+
+		// adjust speed following a kill
+		if (getNumberOfEnemiesAlive() > 0)
+			m_speed *= m_speedIncreaseMultiplier / getNumberOfEnemiesAlive() + 1;
+	}
 }
 
 void Enemies::toggleDirection()
 {
 	for (auto& enemy : m_enemies)
 		enemy.flipDirection();
+}
+
+unsigned int Enemies::getNumberOfEnemiesAlive() const
+{
+	unsigned int total{ 0u };
+	for (auto& enemy : m_enemies)
+	{
+		if (enemy.isAlive())
+			++total;
+	}
+	return total;
 }

@@ -89,7 +89,9 @@ void Game::run()
 			update();
 
 		// update window title
-		window.setTitle(windowTitle + " || State: " + currentStateString);
+		window.setTitle(windowTitle + " || State: " + currentStateString +
+			" || Enemies: " + pl::stringFrom(enemies.getNumberOfEnemiesAlive()) +
+			" || Enemy Speed: " + pl::stringFrom(enemies.getSpeed()));
 
 		// update display
 		window.clear();

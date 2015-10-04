@@ -16,8 +16,13 @@ public:
 	std::size_t size() const { return m_enemies.size(); }
 
 	void toggleDirection();
+	unsigned int getNumberOfEnemiesAlive() const;
+
+	double getSpeed() const { return m_speed; }
 
 private:
+	const double m_speedIncreaseMultiplier;
+	double m_speed;
 	std::vector<Enemy> m_enemies;
 	sf::View m_view;
 };
