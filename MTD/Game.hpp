@@ -32,6 +32,7 @@ private:
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
 	std::string currentStateString;
+	bool doesStateStringNeedUpdating;
 	Player player;
 	Bullets bullets;
 	Enemies enemies;

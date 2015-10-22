@@ -6,6 +6,7 @@ Game::Game()
 	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
 	, state(State::Running)
 	, currentStateString("Running")
+	, doesStateStringNeedUpdating(false)
 	//, state(State::Ready)
 	//, currentStateString("Ready")
 	, graphics()
@@ -39,7 +40,10 @@ void Game::run()
 					if (state == State::Over || state == State::Ready)
 						window.close();
 					else
+					{
 						state = State::Over;
+						doesStateStringNeedUpdating = true;
+					}
 				}
 				else if (event.key.code == keys.getKey("progress state")) // progresses state
 				{
@@ -58,28 +62,10 @@ void Game::run()
 						state = State::Paused;
 						break;
 					}
+					doesStateStringNeedUpdating = true;
 				}
 				else if (event.key.code == keys.getKey("toggle enemy direction")) // toggle enemies' horizontal direction
 					enemies.toggleDirection();
-
-				// update current state string whenever a key is pressed (currently, state can only change by pressing keys)
-				switch (state)
-				{
-				case State::Ready:
-					currentStateString = "Ready";
-					break;
-				case State::Paused:
-					currentStateString = "Paused";
-					break;
-				case State::Over:
-					currentStateString = "Over";
-					break;
-				case State::Running:
-					currentStateString = "Running";
-					break;
-				default:
-					currentStateString = "[unknown]";
-				}
 			}
 		}
 
@@ -87,6 +73,29 @@ void Game::run()
 		timestep.addFrame();
 		while (timestep.isUpdateRequired() && state == State::Running)
 			update();
+
+		// update state string (if it has changed)
+		if (doesStateStringNeedUpdating)
+		{
+			switch (state)
+			{
+			case State::Ready:
+				currentStateString = "Ready";
+				break;
+			case State::Paused:
+				currentStateString = "Paused";
+				break;
+			case State::Over:
+				currentStateString = "Over";
+				break;
+			case State::Running:
+				currentStateString = "Running";
+				break;
+			default:
+				currentStateString = "[unknown]";
+			}
+			doesStateStringNeedUpdating = false;
+		}
 
 		// update window title
 		window.setTitle(windowTitle + " || State: " + currentStateString +
@@ -172,4 +181,13 @@ void Game::update()
 	graphics.updatePlayer(player);
 	graphics.updateBullets(bullets);
 	graphics.updateEnemies(enemies);
+
+
+
+	// update state
+	if (enemies.getNumberOfEnemiesAlive() == 0)
+	{
+		state = State::Over;
+		doesStateStringNeedUpdating = true;
+	}
 }
