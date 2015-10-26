@@ -111,6 +111,7 @@ void Game::run()
 
 void Game::reset()
 {
+	enemies.reset();
 }
 
 void Game::update()

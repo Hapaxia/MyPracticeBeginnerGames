@@ -9,6 +9,7 @@ class Enemies
 {
 public:
 	Enemies(sf::RenderWindow& window);
+	void reset();
 	void update(double dt);
 	void killEnemy(unsigned int enemyIndex);
 	std::vector<Enemy>::const_iterator begin() const { return m_enemies.begin(); }
@@ -25,6 +26,8 @@ private:
 	double m_speed;
 	std::vector<Enemy> m_enemies;
 	sf::View m_view;
+
+	void priv_addEnemies();
 };
 
 #endif // MTD_ENEMIES_HPP
