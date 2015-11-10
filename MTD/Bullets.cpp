@@ -11,6 +11,12 @@ Bullets::Bullets()
 {
 }
 
+void Bullets::reset()
+{
+	m_bullets.clear();
+	m_retriggerTimer = 0.0;
+}
+
 void Bullets::shoot(const pl::Vector2d position)
 {
 	if (m_retriggerTimer >= 0.0)

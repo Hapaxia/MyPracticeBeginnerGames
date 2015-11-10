@@ -9,6 +9,7 @@ class Bullets
 public:
 	Bullets();
 	void shoot(pl::Vector2d position);
+	void reset();
 	void update(double dt);
 	void killBullet(unsigned int bulletIndex);
 	std::list<Bullet>::const_iterator begin() const { return m_bullets.begin(); }

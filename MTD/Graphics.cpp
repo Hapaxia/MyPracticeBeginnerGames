@@ -69,6 +69,16 @@ void Graphics::updateEnemies(const Enemies& enemies)
 	}
 }
 
+void Graphics::clearBullets()
+{
+	m_bullets.clear();
+}
+
+void Graphics::clearEnemies()
+{
+	m_enemies.clear();
+}
+
 sf::Vector2f Graphics::getPlayerSize() const
 {
 	return m_player.getSize();

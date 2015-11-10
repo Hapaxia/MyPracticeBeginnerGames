@@ -20,6 +20,8 @@ public:
 	void updatePlayer(const Player& player);
 	void updateBullets(const Bullets& bullets);
 	void updateEnemies(const Enemies& enemy);
+	void clearBullets();
+	void clearEnemies();
 	sf::Vector2f getPlayerSize() const;
 
 private:

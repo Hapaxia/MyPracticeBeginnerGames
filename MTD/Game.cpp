@@ -112,6 +112,9 @@ void Game::run()
 void Game::reset()
 {
 	enemies.reset();
+	bullets.reset();
+	graphics.clearEnemies();
+	graphics.clearBullets();
 }
 
 void Game::update()
@@ -175,15 +178,11 @@ void Game::update()
 	for (auto& bulletToRemove : bulletsToRemove)
 		bullets.killBullet(bulletToRemove);
 
-
-
 	// graphics
 	graphics.updateView(window.getView());
 	graphics.updatePlayer(player);
 	graphics.updateBullets(bullets);
 	graphics.updateEnemies(enemies);
-
-
 
 	// update state
 	if (enemies.getNumberOfEnemiesAlive() == 0)
