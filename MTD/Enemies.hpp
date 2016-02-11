@@ -18,14 +18,18 @@ public:
 
 	void toggleDirection();
 	unsigned int getNumberOfEnemiesAlive() const;
+	bool getReachedBottom() const;
 
 	double getSpeed() const { return m_speed; }
 
 private:
 	const double m_speedIncreaseMultiplier;
+	const double m_dropSpeedIncreaseMultiplier;
 	double m_speed;
+	double m_dropSpeed;
 	std::vector<Enemy> m_enemies;
 	sf::View m_view;
+	bool m_reachedBottom;
 
 	void priv_addEnemies();
 };

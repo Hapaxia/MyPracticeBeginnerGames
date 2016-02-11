@@ -4,18 +4,21 @@
 Enemy::Enemy(const sf::View& view, const pl::Vector2d position, pl::Vector2d size)
 	: m_position(position)
 	, m_size(size)
-	, m_positionLimits({ 0 + m_size.x / 2.0, view.getSize().x - m_size.x / 2.0 })
+	, m_positionLimits({ pl::Range<double>{ 0 + m_size.x / 2.0, view.getSize().x - m_size.x / 2.0 }, { 0 + m_size.y / 2.0, view.getSize().y - m_size.y / 2.0 } })
 	, m_isMovingRight(true)
 	, m_requiresFlipping(false)
 	, m_isAlive(true)
+	, m_reachedBottom(false)
 {
 }
 
 void Enemy::move(const pl::Vector2d movement)
 {
 	m_position += movement;
-	if (!pl::inRange(m_position.x, m_positionLimits))
+	if (!pl::inRange(m_position.x, m_positionLimits.getHorizontalRange()))
 		m_requiresFlipping = true;
+	if (!pl::inRange(m_position.y, m_positionLimits.getVerticalRange()))
+		m_reachedBottom = true;
 }
 
 pl::Vector2d Enemy::getPosition() const
@@ -52,4 +55,9 @@ void Enemy::die()
 bool Enemy::isAlive() const
 {
 	return m_isAlive;
+}
+
+bool Enemy::reachedBottom() const
+{
+	return m_reachedBottom;
 }

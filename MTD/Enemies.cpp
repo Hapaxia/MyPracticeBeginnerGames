@@ -3,9 +3,12 @@
 
 Enemies::Enemies(sf::RenderWindow& window)
 	: m_speedIncreaseMultiplier(0.9)
+	, m_dropSpeedIncreaseMultiplier(1.1)
 	, m_speed(40.0)
+	, m_dropSpeed(0.05)
 	, m_enemies()
 	, m_view(window.getView())
+	, m_reachedBottom(false)
 {
 	priv_addEnemies();
 }
@@ -13,23 +16,31 @@ Enemies::Enemies(sf::RenderWindow& window)
 void Enemies::reset()
 {
 	m_speed = 40.0;
+	m_dropSpeed = 0.05;
+	m_reachedBottom = false;
 	m_enemies.clear();
 	priv_addEnemies();
 }
 
 void Enemies::update(double dt)
 {
+	if (m_reachedBottom)
+		return;
+
 	bool requiresDirectionFlipping = false;
 	for (auto& enemy : m_enemies)
 	{
 		if (!enemy.isAlive())
 			continue;
+
 		if (enemy.isMovingRight())
-			enemy.move({ m_speed * dt, 0.0 });
+			enemy.move({ m_speed * dt, m_speed * m_dropSpeed * dt });
 		else
-			enemy.move({ -m_speed * dt, 0.0 });
+			enemy.move({ -m_speed * dt, m_speed * m_dropSpeed * dt });
 		if (enemy.requiresFlipping())
 			requiresDirectionFlipping = true;
+		if (enemy.reachedBottom())
+			m_reachedBottom = true;
 	}
 	if (requiresDirectionFlipping)
 		toggleDirection();
@@ -51,6 +62,7 @@ void Enemies::toggleDirection()
 {
 	for (auto& enemy : m_enemies)
 		enemy.flipDirection();
+	m_dropSpeed *= m_dropSpeedIncreaseMultiplier;
 }
 
 unsigned int Enemies::getNumberOfEnemiesAlive() const
@@ -62,6 +74,11 @@ unsigned int Enemies::getNumberOfEnemiesAlive() const
 			++total;
 	}
 	return total;
+}
+
+bool Enemies::getReachedBottom() const
+{
+	return m_reachedBottom;
 }
 
 void Enemies::priv_addEnemies()

@@ -16,14 +16,16 @@ public:
 	bool requiresFlipping() const;
 	void die();
 	bool isAlive() const;
+	bool reachedBottom() const;
 
 private:
 	const pl::Vector2d m_size;
 	pl::Vector2d m_position;
-	pl::Range<double> m_positionLimits;
+	pl::AreaRange<double> m_positionLimits;
 	bool m_isMovingRight;
 	bool m_requiresFlipping;
 	bool m_isAlive;
+	bool m_reachedBottom;
 };
 
 #endif // MTD_ENEMY_HPP

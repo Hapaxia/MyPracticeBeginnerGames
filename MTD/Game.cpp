@@ -190,4 +190,9 @@ void Game::update()
 		state = State::Over;
 		doesStateStringNeedUpdating = true;
 	}
+	if (enemies.getReachedBottom())
+	{
+		state = State::Over;
+		doesStateStringNeedUpdating = true;
+	}
 }
