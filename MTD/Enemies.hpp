@@ -21,6 +21,7 @@ public:
 	bool getReachedBottom() const;
 
 	double getSpeed() const { return m_speed; }
+	double getDropSpeed() const { return m_dropSpeed; }
 
 private:
 	const double m_speedIncreaseMultiplier;

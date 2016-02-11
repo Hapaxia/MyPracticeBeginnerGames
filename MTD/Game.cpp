@@ -100,7 +100,8 @@ void Game::run()
 		// update window title
 		window.setTitle(windowTitle + " || State: " + currentStateString +
 			" || Enemies: " + pl::stringFrom(enemies.getNumberOfEnemiesAlive()) +
-			" || Enemy Speed: " + pl::stringFrom(enemies.getSpeed()));
+			" || Enemy Speed: " + pl::stringFrom(enemies.getSpeed()) +
+			" || Enemy Drop Speed: " + pl::stringFrom(enemies.getDropSpeed()));
 
 		// update display
 		window.clear();
