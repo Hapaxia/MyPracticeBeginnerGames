@@ -15,9 +15,9 @@ Enemy::Enemy(const sf::View& view, const pl::Vector2d position, pl::Vector2d siz
 void Enemy::move(const pl::Vector2d movement)
 {
 	m_position += movement;
-	if (!pl::inRange(m_position.x, m_positionLimits.getHorizontalRange()))
+	if (!m_positionLimits.getHorizontalRange().contains(m_position.x))
 		m_requiresFlipping = true;
-	if (!pl::inRange(m_position.y, m_positionLimits.getVerticalRange()))
+	if (!m_positionLimits.getVerticalRange().contains(m_position.y))
 		m_reachedBottom = true;
 }
 

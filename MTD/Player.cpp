@@ -24,7 +24,7 @@ void Player::move(const Direction direction)
 		movement = 0.0;
 	}
 	m_position += movement * m_speed * m_dt;
-	m_position = pl::clamp(m_position, m_positionLimits);
+	m_position = m_positionLimits.clamp(m_position);
 }
 
 double Player::getPosition() const

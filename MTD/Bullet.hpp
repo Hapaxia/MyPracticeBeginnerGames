@@ -1,7 +1,7 @@
 #ifndef MTD_BULLET_HPP
 #define MTD_BULLET_HPP
 
-#include <Plinth/Generic.hpp>
+#include <Plinth/Vector2.hpp>
 
 class Bullet
 {

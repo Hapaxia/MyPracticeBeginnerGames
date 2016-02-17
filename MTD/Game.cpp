@@ -141,8 +141,8 @@ void Game::update()
 	enemies.update(timestep.getStep());
 
 	// remove enemies hit by bullets
-	pl::AreaRange<double> bulletBoundingBox;
-	pl::AreaRange<double> enemyBoundingBox;
+	pl::RangeArea<double> bulletBoundingBox;
+	pl::RangeArea<double> enemyBoundingBox;
 	pl::Vector2d enemyCenter{ 0.0, 0.0 };
 	pl::Vector2d bulletCenter{ 0.0, 0.0 };
 	std::vector<unsigned int> enemiesToRemove;
@@ -162,7 +162,7 @@ void Game::update()
 			bulletCenter = bullet.getSize() / 2.0;
 			bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletCenter);
 			bulletBoundingBox.setRightTop(bullet.getPosition() + bulletCenter);
-			if (pl::areOverlapping(enemyBoundingBox, bulletBoundingBox))
+			if (enemyBoundingBox.overlaps(bulletBoundingBox))
 			{
 				auto findEnemyIt = std::find(enemiesToRemove.begin(), enemiesToRemove.end(), enemy - enemies.begin());
 				if (findEnemyIt == enemiesToRemove.end())

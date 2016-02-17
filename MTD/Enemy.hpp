@@ -1,7 +1,7 @@
 #ifndef MTD_ENEMY_HPP
 #define MTD_ENEMY_HPP
 
-#include <Plinth/Generic.hpp>
+#include <Plinth/Ranges.hpp>
 #include <SFML/Graphics/View.hpp>
 
 class Enemy
@@ -21,7 +21,7 @@ public:
 private:
 	const pl::Vector2d m_size;
 	pl::Vector2d m_position;
-	pl::AreaRange<double> m_positionLimits;
+	pl::RangeArea<double> m_positionLimits;
 	bool m_isMovingRight;
 	bool m_requiresFlipping;
 	bool m_isAlive;

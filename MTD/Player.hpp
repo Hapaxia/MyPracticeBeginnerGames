@@ -1,7 +1,7 @@
 #ifndef MTD_PLAYER_HPP
 #define MTD_PLAYER_HPP
 
-#include <Plinth/Generic.hpp>
+#include <Plinth/Ranges.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "Graphics.hpp"
