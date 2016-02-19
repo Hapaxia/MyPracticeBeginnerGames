@@ -143,25 +143,25 @@ void Game::update()
 	// remove enemies hit by bullets
 	pl::RangeArea<double> bulletBoundingBox;
 	pl::RangeArea<double> enemyBoundingBox;
-	pl::Vector2d enemyCenter{ 0.0, 0.0 };
-	pl::Vector2d bulletCenter{ 0.0, 0.0 };
+	pl::Vector2d enemyHalfSize{ 0.0, 0.0 };
+	pl::Vector2d bulletHalfSize{ 0.0, 0.0 };
 	std::vector<unsigned int> enemiesToRemove;
 	std::vector<unsigned int> bulletsToRemove;
 	for (auto enemy = enemies.begin(), enemiesEnd = enemies.end(); enemy != enemiesEnd; ++enemy)
 	{
 		if (!enemy->isAlive())
 			continue;
-		enemyCenter = enemy->getSize() / 2.0;
-		enemyBoundingBox.setLeftBottom(enemy->getPosition() - enemyCenter);
-		enemyBoundingBox.setRightTop(enemy->getPosition() + enemyCenter);
+		enemyHalfSize = enemy->getSize() / 2.0;
+		enemyBoundingBox.setLeftBottom(enemy->getPosition() - enemyHalfSize);
+		enemyBoundingBox.setRightTop(enemy->getPosition() + enemyHalfSize);
 		unsigned int bulletNumber{ 0u };
 		for (auto& bullet : bullets)
 		{
 			if (!bullet.isAlive())
 				continue;
-			bulletCenter = bullet.getSize() / 2.0;
-			bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletCenter);
-			bulletBoundingBox.setRightTop(bullet.getPosition() + bulletCenter);
+			bulletHalfSize = bullet.getSize() / 2.0;
+			bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletHalfSize);
+			bulletBoundingBox.setRightTop(bullet.getPosition() + bulletHalfSize);
 			if (enemyBoundingBox.overlaps(bulletBoundingBox))
 			{
 				auto findEnemyIt = std::find(enemiesToRemove.begin(), enemiesToRemove.end(), enemy - enemies.begin());
