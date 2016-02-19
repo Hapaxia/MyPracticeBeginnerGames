@@ -22,7 +22,7 @@ public:
 	void updateEnemies(const Enemies& enemy);
 	void clearBullets();
 	void clearEnemies();
-	sf::Vector2f getPlayerSize() const;
+	//sf::Vector2f getPlayerSize() const;
 
 private:
 	sf::RectangleShape m_player;

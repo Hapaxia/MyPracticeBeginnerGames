@@ -1,10 +1,18 @@
 #include "Player.hpp"
 #include <Plinth/Sfml/Generic.hpp>
 
+namespace
+{
+
+const pl::Vector2d playerSize{ 64.0, 32.0 };
+
+}
+
 Player::Player(const sf::RenderWindow& window, const double dt, const Graphics& graphics)
 	: m_dt(dt)
 	, m_speed(300.0)
-	, m_positionLimits({ 0 + graphics.getPlayerSize().x / 2.f, window.getSize().x - graphics.getPlayerSize().x / 2.f })
+	, m_size(playerSize)
+	, m_positionLimits({ 0 + playerSize.x / 2.0, window.getSize().x - playerSize.x / 2.0 })
 	, m_position(m_positionLimits.min)
 {
 }
@@ -30,4 +38,9 @@ void Player::move(const Direction direction)
 double Player::getPosition() const
 {
 	return m_position;
+}
+
+pl::Vector2d Player::getSize() const
+{
+	return m_size;
 }

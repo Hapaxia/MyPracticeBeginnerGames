@@ -87,7 +87,7 @@ void Enemies::priv_addEnemies()
 	const unsigned int enemiesPerRow = 8u;
 	const double horizontalSpacing = 65.0;
 	const double verticalSpacing = 65.0;
-	const pl::Vector2d positionOfTopLeft = { 120.0, 80.0 };
+	const pl::Vector2d positionOfTopLeft = { 120.0, 180.0 };
 	for (unsigned int i = 0; i < numberOfEnemies; ++i)
 		m_enemies.emplace_back(Enemy(m_view, positionOfTopLeft + pl::Vector2d{ horizontalSpacing * (i % enemiesPerRow), verticalSpacing * (i / enemiesPerRow) }));
 }

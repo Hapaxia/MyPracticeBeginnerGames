@@ -11,12 +11,11 @@
 #include <Plinth/StringFrom.hpp>
 
 Graphics::Graphics()
-	: m_player({ 64.f, 32.f })
+	: m_player()
 	, m_bullets()
 	, m_enemies()
 {
 	m_player.setFillColor(pl::Colors::Cyan);
-	m_player.setOrigin(pl::Anchor::Local::getBottomCenter(m_player));
 }
 
 void Graphics::updateView(const sf::View& view)
@@ -26,6 +25,8 @@ void Graphics::updateView(const sf::View& view)
 
 void Graphics::updatePlayer(const Player& player)
 {
+	m_player.setSize(pl::Sfml::vector2(player.getSize()));
+	m_player.setOrigin(pl::Anchor::Local::getBottomCenter(m_player));
 	m_player.setPosition(static_cast<float>(player.getPosition()), m_view.getSize().y);
 }
 
@@ -79,10 +80,12 @@ void Graphics::clearEnemies()
 	m_enemies.clear();
 }
 
+/*
 sf::Vector2f Graphics::getPlayerSize() const
 {
 	return m_player.getSize();
 }
+*/
 
 void Graphics::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {

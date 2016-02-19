@@ -153,9 +153,22 @@ void Game::update()
 	bullets.update(timestep.getStep());
 	enemies.update(timestep.getStep());
 
+	enum class Progression
+	{
+		None,
+		EnemiesWon,
+		EnemiesDestroyed
+	} progression = Progression::None;
+
+	// prepare player's bounding box
+	pl::Vector2d playerHalfSize{ player.getSize().x / 2.0, player.getSize().y };
+	pl::RangeArea<double> playerBoundingBox;
+	playerBoundingBox.setLeftBottom(pl::Vector2d{ player.getPosition(), window.getView().getSize().y } - playerHalfSize);
+	playerBoundingBox.setRightTop({ player.getPosition() + playerHalfSize.x, window.getView().getSize().y });
+
 	// remove enemies hit by bullets
-	pl::RangeArea<double> bulletBoundingBox;
 	pl::RangeArea<double> enemyBoundingBox;
+	pl::RangeArea<double> bulletBoundingBox;
 	pl::Vector2d enemyHalfSize{ 0.0, 0.0 };
 	pl::Vector2d bulletHalfSize{ 0.0, 0.0 };
 	std::vector<unsigned int> enemiesToRemove;
@@ -167,6 +180,11 @@ void Game::update()
 		enemyHalfSize = enemy->getSize() / 2.0;
 		enemyBoundingBox.setLeftBottom(enemy->getPosition() - enemyHalfSize);
 		enemyBoundingBox.setRightTop(enemy->getPosition() + enemyHalfSize);
+		if (enemyBoundingBox.overlaps(playerBoundingBox))
+		{
+			progression = Progression::EnemiesWon;
+			break;
+		}
 		unsigned int bulletNumber{ 0u };
 		for (auto& bullet : bullets)
 		{
@@ -188,6 +206,10 @@ void Game::update()
 		enemies.killEnemy(enemyToRemove);
 	for (auto& bulletToRemove : bulletsToRemove)
 		bullets.killBullet(bulletToRemove);
+	if (enemies.getNumberOfEnemiesAlive() == 0)
+		progression = Progression::EnemiesDestroyed;
+	if (enemies.getReachedBottom())
+		progression = Progression::EnemiesWon;
 
 	// graphics
 	graphics.updateView(window.getView());
@@ -196,12 +218,12 @@ void Game::update()
 	graphics.updateEnemies(enemies);
 
 	// update state
-	if (enemies.getNumberOfEnemiesAlive() == 0)
+	if (progression == Progression::EnemiesDestroyed)
 	{
 		state = State::Over;
 		doesStateStringNeedUpdating = true;
 	}
-	if (enemies.getReachedBottom())
+	if (progression == Progression::EnemiesWon)
 	{
 		state = State::Over;
 		doesStateStringNeedUpdating = true;
