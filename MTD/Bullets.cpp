@@ -43,6 +43,9 @@ void Bullets::update(const double dt)
 
 void Bullets::killBullet(const unsigned int bulletIndex)
 {
+	if (bulletIndex >= m_bullets.size())
+		return;
+
 	auto it = m_bullets.begin();
 	std::advance(it, bulletIndex);
 	it->die();
