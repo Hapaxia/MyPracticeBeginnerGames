@@ -34,7 +34,7 @@ void Bullets::update(const double dt)
 	for (std::list<Bullet>::iterator it = m_bullets.begin(), end = m_bullets.end(); it != end;)
 	{
 		it->move(m_speed * dt);
-		if (it->getPosition().y < 0.0)
+		if (it->getPosition().y < 0.0 || !it->isAlive())
 			it = m_bullets.erase(it);
 		else
 			++it;

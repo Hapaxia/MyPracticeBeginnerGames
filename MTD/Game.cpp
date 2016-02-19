@@ -1,5 +1,18 @@
 #include "Game.hpp"
 
+namespace
+{
+
+template <class T, class U>
+void addElementToVectorIfUnique(std::vector<T>& vector, const U& elementToAdd)
+{
+	auto it = std::find(vector.begin(), vector.end(), static_cast<T>(elementToAdd));
+	if (it == vector.end())
+		vector.emplace_back(elementToAdd);
+}
+
+} // namespace
+
 Game::Game()
 	: windowTitle("MTD")
 	, timestep()
@@ -164,12 +177,8 @@ void Game::update()
 			bulletBoundingBox.setRightTop(bullet.getPosition() + bulletHalfSize);
 			if (enemyBoundingBox.overlaps(bulletBoundingBox))
 			{
-				auto findEnemyIt = std::find(enemiesToRemove.begin(), enemiesToRemove.end(), enemy - enemies.begin());
-				if (findEnemyIt == enemiesToRemove.end())
-					enemiesToRemove.emplace_back(enemy - enemies.begin());
-				auto findBulletIt = std::find(bulletsToRemove.begin(), bulletsToRemove.end(), bulletNumber);
-				if (findBulletIt == bulletsToRemove.end())
-					bulletsToRemove.emplace_back(bulletNumber);
+				addElementToVectorIfUnique(enemiesToRemove, enemy - enemies.begin());
+				addElementToVectorIfUnique(bulletsToRemove, bulletNumber);
 			}
 			++bulletNumber;
 		}
