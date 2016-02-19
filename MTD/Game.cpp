@@ -170,15 +170,16 @@ void Game::update()
 		unsigned int bulletNumber{ 0u };
 		for (auto& bullet : bullets)
 		{
-			if (!bullet.isAlive())
-				continue;
-			bulletHalfSize = bullet.getSize() / 2.0;
-			bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletHalfSize);
-			bulletBoundingBox.setRightTop(bullet.getPosition() + bulletHalfSize);
-			if (enemyBoundingBox.overlaps(bulletBoundingBox))
+			if (bullet.isAlive())
 			{
-				addElementToVectorIfUnique(enemiesToRemove, enemy - enemies.begin());
-				addElementToVectorIfUnique(bulletsToRemove, bulletNumber);
+				bulletHalfSize = bullet.getSize() / 2.0;
+				bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletHalfSize);
+				bulletBoundingBox.setRightTop(bullet.getPosition() + bulletHalfSize);
+				if (enemyBoundingBox.overlaps(bulletBoundingBox))
+				{
+					addElementToVectorIfUnique(enemiesToRemove, enemy - enemies.begin());
+					addElementToVectorIfUnique(bulletsToRemove, bulletNumber);
+				}
 			}
 			++bulletNumber;
 		}
