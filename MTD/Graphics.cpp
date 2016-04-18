@@ -54,6 +54,7 @@ void Graphics::updateEnemies(const Enemies& enemies)
 {
 	m_enemies.resize(enemies.size(), sf::RectangleShape());
 	std::vector<sf::RectangleShape>::iterator it = m_enemies.begin();
+	const float angle{ static_cast<float>((enemies.getSpeed() - 40.0) * 0.035) }; // angle to 'lean' based on current speed
 	for (auto& enemy : enemies)
 	{
 		if (enemy.isAlive())
@@ -63,6 +64,7 @@ void Graphics::updateEnemies(const Enemies& enemies)
 			it->setFillColor(pl::Colors::Peach);
 			it->setOrigin(pl::Anchor::Local::getCenter(*it));
 			it->setPosition(pl::Sfml::vector2(enemy.getPosition()));
+			it->setRotation(enemy.isMovingRight() ? angle : -angle);
 			++it;
 		}
 		else
