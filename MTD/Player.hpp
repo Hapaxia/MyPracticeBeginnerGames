@@ -18,6 +18,7 @@ public:
 
 	Player(const sf::RenderWindow& window, double dt, const Graphics& graphics);
 	void move(Direction direction);
+	void reset();
 	double getPosition() const;
 	pl::Vector2d getSize() const;
 

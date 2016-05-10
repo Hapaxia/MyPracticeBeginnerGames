@@ -3,6 +3,21 @@
 namespace
 {
 
+const std::vector<std::string> infoTitle
+{
+	{ "M" },
+	{ " T" },
+	{ "  D " }
+};
+const std::vector<std::string> infoKeys
+{
+	{ " left \x10" },
+	{ "right \x11" },
+	{ " fire SPACE" },
+	{ " quit ESC" },
+	{ "pause P" }
+};
+
 template <class T, class U>
 void addElementToVectorIfUnique(std::vector<T>& vector, const U& elementToAdd)
 {
@@ -17,23 +32,27 @@ Game::Game()
 	: windowTitle("MTD")
 	, timestep()
 	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
-	, state(State::Running)
-	, currentStateString("Running")
-	, doesStateStringNeedUpdating(false)
-	//, state(State::Ready)
-	//, currentStateString("Ready")
+	//, state(State::Running)
+	//, currentStateString("Running")
+	, stateHasChanged(false)
+	, state(State::Ready)
+	, currentStateString("Ready")
 	, graphics()
 	, player(window, timestep.getStep(), graphics)
 	, bullets()
 	, enemies(window)
 	, keys()
+	, resources()
+	, cs()
+	, fireEventPressed(false)
+	, score(0u)
 {
-	keys.addKey(sf::Keyboard::Left,   "player left");
-	keys.addKey(sf::Keyboard::Right,  "player right");
-	keys.addKey(sf::Keyboard::Space,  "player shoot");
-	keys.addKey(sf::Keyboard::Tab,    "progress state");
-	keys.addKey(sf::Keyboard::Escape, "quit");
-	keys.addKey(sf::Keyboard::Return, "toggle enemy direction");
+	initKeys();
+	if (!initResources())
+		throw "Failed to initialise resources.";
+	if (!initConsoleScreen())
+		throw "Failed to initialise Console Screen.";
+	window.setMouseCursorVisible(false);
 }
 
 void Game::run()
@@ -55,7 +74,8 @@ void Game::run()
 					else
 					{
 						state = State::Over;
-						doesStateStringNeedUpdating = true;
+						stateHasChanged = true;
+						timestep.resetTime();
 					}
 				}
 				else if (event.key.code == keys.getKey("progress state")) // progresses state
@@ -75,10 +95,49 @@ void Game::run()
 						state = State::Paused;
 						break;
 					}
-					doesStateStringNeedUpdating = true;
+					stateHasChanged = true;
 				}
 				else if (event.key.code == keys.getKey("toggle enemy direction")) // toggle enemies' horizontal direction
 					enemies.toggleDirection();
+				else if (event.key.code == keys.getKey("player shoot"))
+				{
+					if (state != State::Running)
+						fireEventPressed = true;
+				}
+				else if (event.key.code == keys.getKey("pause"))
+				{
+					if (state == State::Paused)
+					{
+						state = State::Running;
+						stateHasChanged = true;
+						timestep.unpause();
+					}
+					else if (state == State::Running)
+					{
+						timestep.pause();
+						state = State::Paused;
+						stateHasChanged = true;
+					}
+				}
+			}
+			else if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == keys.getKey("player shoot") && fireEventPressed)
+				{
+					if (state == State::Ready)
+					{
+						state = State::Running;
+						stateHasChanged = true;
+						timestep.resetTime();
+					}
+					else if (state == State::Over && timestep.getTime() > 1.0) // delay ability to skip game over screen to avoid skipping by accident
+					{
+						reset();
+						state = State::Ready;
+						stateHasChanged = true;
+					}
+					fireEventPressed = false;
+				}
 			}
 		}
 
@@ -87,8 +146,11 @@ void Game::run()
 		while (timestep.isUpdateRequired() && state == State::Running)
 			update();
 
+		// update console screen
+		printScreen();
+
 		// update state string (if it has changed)
-		if (doesStateStringNeedUpdating)
+		if (stateHasChanged)
 		{
 			switch (state)
 			{
@@ -107,7 +169,7 @@ void Game::run()
 			default:
 				currentStateString = "[unknown]";
 			}
-			doesStateStringNeedUpdating = false;
+			stateHasChanged = false;
 		}
 
 		// update window title
@@ -118,17 +180,62 @@ void Game::run()
 
 		// update display
 		window.clear();
-		window.draw(graphics);
+		if (state != State::Ready)
+			window.draw(graphics);
+		window.draw(cs);
 		window.display();
 	}
 }
 
+void Game::initKeys()
+{
+	keys.addKey(sf::Keyboard::Left, "player left");
+	keys.addKey(sf::Keyboard::Right, "player right");
+	keys.addKey(sf::Keyboard::Space, "player shoot");
+	keys.addKey(sf::Keyboard::P, "pause");
+	keys.addKey(sf::Keyboard::Tab, "progress state");
+	keys.addKey(sf::Keyboard::Escape, "quit");
+	keys.addKey(sf::Keyboard::Return, "toggle enemy direction");
+}
+
+bool Game::initResources()
+{
+	try
+	{
+		resources.addTexture("font sheet", "resources/fontsheet.png");
+	}
+	catch (pl::Exception&)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Game::initConsoleScreen()
+{
+	const sf::Vector2u textureTileSize{ 8u, 8u };
+	const sf::Vector2u consoleScreenScale{ 3u, 3u };
+	cs.setTexture(resources.getTexture("font sheet"));
+	cs.setTextureTileSize(textureTileSize);
+	cs.setNumberOfTextureTilesPerRow(16);
+	cs.setMode({ 33, 25 });
+	cs.setSize({ static_cast<float>(cs.getMode().x * textureTileSize.x * consoleScreenScale.x), static_cast<float>(cs.getMode().y * textureTileSize.y * consoleScreenScale.y) });
+	cs.setPosition((window.getSize().x - cs.getSize().x) / 2, 0);
+	cs.setShowCursor(false);
+	cs.setShowBackground(false);
+	cs.crash();
+
+	return true;
+}
+
 void Game::reset()
 {
+	player.reset();
 	enemies.reset();
 	bullets.reset();
 	graphics.clearEnemies();
 	graphics.clearBullets();
+	score = 0;
 }
 
 void Game::update()
@@ -203,7 +310,11 @@ void Game::update()
 		}
 	}
 	for (auto& enemyToRemove : enemiesToRemove)
+	{
 		enemies.killEnemy(enemyToRemove);
+		score += 10;
+		score += static_cast<unsigned int>(enemies.getDropSpeed() * 100 + enemies.getSpeed() / 50);
+	}
 	for (auto& bulletToRemove : bulletsToRemove)
 		bullets.killBullet(bulletToRemove);
 	if (enemies.getNumberOfEnemiesAlive() == 0)
@@ -221,11 +332,87 @@ void Game::update()
 	if (progression == Progression::EnemiesDestroyed)
 	{
 		state = State::Over;
-		doesStateStringNeedUpdating = true;
+		stateHasChanged = true;
+		timestep.resetTime();
 	}
 	if (progression == Progression::EnemiesWon)
 	{
 		state = State::Over;
-		doesStateStringNeedUpdating = true;
+		stateHasChanged = true;
+		timestep.resetTime();
 	}
+}
+
+inline void Game::printScreen()
+{
+	switch (state)
+	{
+	case State::Ready:
+		printScreenReady();
+		break;
+	case State::Paused:
+		printScreenPaused();
+		break;
+	case State::Over:
+		printScreenGameOver();
+		break;
+	case State::Running:
+		printScreenRunning();
+		break;
+	default:
+		cs.clear();
+	}
+}
+
+void Game::printScreenReady()
+{
+	cs.clear();
+	unsigned int row{ 2u };
+	for (auto& line : infoTitle)
+	{
+		cs.printStretchedAt({ getColumnToCenterString(infoTitle.back()), row++ }, line);
+		++row;
+	}
+	row = 11u;
+	for (auto& line : infoKeys)
+		cs.printAt({ 10, row++ }, line);
+
+	const std::string startString{ "Press FIRE to start" };
+	if (blink(1.0, 1.5))
+		cs.printAt({ getColumnToCenterString(startString), 20 }, startString);
+}
+
+void Game::printScreenGameOver()
+{
+	cs.clear();
+	const std::string gameOverString{ "GAME OVER!" };
+	const std::string continueString{ "Press FIRE" };
+	cs.printStretchedAt({ getColumnToCenterString(gameOverString), cs.getMode().y / 2u - 1u }, gameOverString);
+	cs.printAt({ getColumnToCenterString(continueString), 20 }, continueString);
+}
+
+void Game::printScreenRunning()
+{
+	cs.clear();
+	cs.printAt({ 0, 0 }, "SCORE " + pl::padStringLeft(pl::stringFrom(score), 4, '0'));
+	cs.printAt({ cs.getMode().x - 9, 0 }, "7590 HIGH");
+}
+
+void Game::printScreenPaused()
+{
+	cs.clear();
+	const std::string pausedString{ "PAUSED!" };
+	const std::string resumeString{ "Press P to resume" };
+	cs.printStretchedAt({ getColumnToCenterString(pausedString), cs.getMode().y / 2u - 1u }, pausedString);
+	cs.printAt({ getColumnToCenterString(resumeString), 20 }, resumeString);
+}
+
+inline unsigned int Game::getColumnToCenterString(const std::string& string)
+{
+	return (cs.getMode().x - string.size()) / 2u;
+}
+
+inline bool Game::blink(double hold, double duration)
+{
+	return pl::mod(timestep.getTime(), duration) < hold;
 }
