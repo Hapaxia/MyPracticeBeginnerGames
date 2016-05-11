@@ -4,6 +4,7 @@
 #include "Enemy.hpp"
 #include <vector>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <Plinth/Range.hpp>
 
 class Enemies
 {
@@ -22,12 +23,16 @@ public:
 
 	double getSpeed() const { return m_speed; }
 	double getDropSpeed() const { return m_dropSpeed; }
+	double getRotation() const { return m_rotation; }
 
 private:
 	const double m_speedIncreaseMultiplier;
 	const double m_dropSpeedIncreaseMultiplier;
+	const double m_rotationSpeed;
 	double m_speed;
 	double m_dropSpeed;
+	double m_rotation;
+	pl::Range<double> m_rotationRange;
 	std::vector<Enemy> m_enemies;
 	sf::View m_view;
 	bool m_reachedBottom;

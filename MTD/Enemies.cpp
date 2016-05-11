@@ -1,11 +1,15 @@
 #include "Enemies.hpp"
 #include <Plinth/Generic.hpp>
+#include <Plinth/Range.hpp>
 
 Enemies::Enemies(sf::RenderWindow& window)
 	: m_speedIncreaseMultiplier(0.9)
 	, m_dropSpeedIncreaseMultiplier(1.1)
+	, m_rotationSpeed(10.0)
 	, m_speed(40.0)
 	, m_dropSpeed(0.05)
+	, m_rotation(0.0)
+	, m_rotationRange({ 0.0, 0.0 })
 	, m_enemies()
 	, m_view(window.getView())
 	, m_reachedBottom(false)
@@ -44,6 +48,13 @@ void Enemies::update(double dt)
 	}
 	if (requiresDirectionFlipping)
 		toggleDirection();
+	const float targetAngle{ static_cast<float>((m_speed - 40.0) * 0.035) }; // angle to 'lean' based on current speed
+	m_rotationRange.set(-targetAngle, targetAngle);
+	if (m_enemies[0].isMovingRight())
+		m_rotation += targetAngle * m_rotationSpeed * dt;
+	else
+		m_rotation -= targetAngle * m_rotationSpeed * dt;
+	m_rotation = m_rotationRange.clamp(m_rotation);
 }
 
 void Enemies::killEnemy(const unsigned int enemyIndex)

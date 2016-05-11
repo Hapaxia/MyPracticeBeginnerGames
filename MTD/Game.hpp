@@ -1,12 +1,8 @@
 /*
 
 modifications:
-starts in ready state
-added score
-added Console Screen from Selba Ward (https://github.com/Hapaxia/SelbaWard/wiki)
-each state now shows different displays on the console screen
-added ability to move through states with more intuitive controls (fire to start game from ready and to continue from game over, [P] to pause/resume)
-timestep time is reset when state changes (for most changes) so that the time represents the amount of time in that state. it doesn't reset during pause - it should just pause
+add animated rotation to enemies
+moved enemy "angle" calculation from Graphics to Enemies
 
 */
 
