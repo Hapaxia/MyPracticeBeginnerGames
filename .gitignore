@@ -11,6 +11,8 @@
 *.vcxproj
 *.vcxproj.filters
 *.props
+*.vc.db
+*.vc.vc.opendb
 
 
 licence for header.txt
