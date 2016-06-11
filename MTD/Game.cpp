@@ -21,9 +21,9 @@ const std::vector<std::string> infoKeys
 template <class T, class U>
 void addElementToVectorIfUnique(std::vector<T>& vector, const U& elementToAdd)
 {
-	auto it = std::find(vector.begin(), vector.end(), static_cast<T>(elementToAdd));
-	if (it == vector.end())
-		vector.emplace_back(elementToAdd);
+	const T element{ static_cast<T>(elementToAdd) };
+	if (std::find(vector.begin(), vector.end(), element) == vector.end())
+		vector.emplace_back(element);
 }
 
 } // namespace
