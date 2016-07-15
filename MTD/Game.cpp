@@ -258,7 +258,7 @@ void Game::update()
 			player.move(Player::Direction::Left);
 	}
 	bullets.update(timestep.getStep());
-	enemies.update(timestep.getStep());
+	enemies.update(timestep.getStep(), player.getPosition());
 
 	enum class Progression
 	{

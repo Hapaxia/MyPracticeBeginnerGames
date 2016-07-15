@@ -11,7 +11,7 @@ class Enemies
 public:
 	Enemies(sf::RenderWindow& window);
 	void reset();
-	void update(double dt);
+	void update(double dt, double targetPosition);
 	void killEnemy(unsigned int enemyIndex);
 	std::vector<Enemy>::const_iterator begin() const { return m_enemies.begin(); }
 	std::vector<Enemy>::const_iterator end() const { return m_enemies.end(); }
@@ -36,6 +36,7 @@ private:
 	std::vector<Enemy> m_enemies;
 	sf::View m_view;
 	bool m_reachedBottom;
+	double m_targetPosition;
 
 	void priv_addEnemies();
 };

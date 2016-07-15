@@ -10,10 +10,20 @@
 
 #include <Plinth/StringFrom.hpp>
 
+namespace
+{
+
+const sf::Vector2f bulletSize{ 8.f, 32.f };
+
+} // namespace
+
+
+
 Graphics::Graphics()
 	: m_player()
 	, m_bullets()
 	, m_enemies()
+	, m_enemyBullets()
 {
 	m_player.setFillColor(pl::Colors::Cyan);
 }
@@ -52,6 +62,7 @@ void Graphics::updateBullets(const Bullets& bullets)
 
 void Graphics::updateEnemies(const Enemies& enemies)
 {
+	m_enemyBullets.clear();
 	m_enemies.resize(enemies.size(), sf::RectangleShape());
 	std::vector<sf::RectangleShape>::iterator it = m_enemies.begin();
 	const float angle{ static_cast<float>(enemies.getRotation()) };
@@ -69,6 +80,16 @@ void Graphics::updateEnemies(const Enemies& enemies)
 		}
 		else
 			m_enemies.pop_back();
+
+		// update each enemies' bullets
+		if (enemy.isBulletAlive())
+		{
+			m_enemyBullets.emplace_back(bulletSize);
+			sf::RectangleShape& bullet{ m_enemyBullets.back() };
+			bullet.setOrigin(bulletSize / 2.f);
+			bullet.setFillColor(pl::Colors::LightPurple);
+			bullet.setPosition(pl::Sfml::vector2(enemy.getBulletPosition()));
+		}
 	}
 }
 
@@ -91,9 +112,11 @@ sf::Vector2f Graphics::getPlayerSize() const
 
 void Graphics::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	for (auto& bullet : m_bullets)
-		target.draw(bullet);
 	for (auto& enemy : m_enemies)
 		target.draw(enemy);
+	for (auto& enemyBullet : m_enemyBullets)
+		target.draw(enemyBullet);
+	for (auto& bullet : m_bullets)
+		target.draw(bullet);
 	target.draw(m_player);
 }

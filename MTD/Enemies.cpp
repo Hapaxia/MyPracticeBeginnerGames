@@ -1,6 +1,14 @@
 #include "Enemies.hpp"
 #include <Plinth/Generic.hpp>
 #include <Plinth/Range.hpp>
+#include <Plinth/Random.hpp>
+
+namespace
+{
+
+pl::Random random;
+
+} // namespace
 
 Enemies::Enemies(sf::RenderWindow& window)
 	: m_speedIncreaseMultiplier(0.9)
@@ -13,6 +21,7 @@ Enemies::Enemies(sf::RenderWindow& window)
 	, m_enemies()
 	, m_view(window.getView())
 	, m_reachedBottom(false)
+	, m_targetPosition(0.0)
 {
 	priv_addEnemies();
 }
@@ -26,25 +35,35 @@ void Enemies::reset()
 	priv_addEnemies();
 }
 
-void Enemies::update(double dt)
+void Enemies::update(const double dt, const double targetPosition)
 {
 	if (m_reachedBottom)
 		return;
 
+	const double targetAccuracyRange{ 250.0 };
+	m_targetPosition = targetPosition + random.value(-targetAccuracyRange, targetAccuracyRange);
+
+	const double targetRangeEpsilon{ 50.0 };
+
 	bool requiresDirectionFlipping = false;
 	for (auto& enemy : m_enemies)
 	{
+		enemy.updateBullet(dt);
+
 		if (!enemy.isAlive())
 			continue;
 
-		if (enemy.isMovingRight())
-			enemy.move({ m_speed * dt, m_speed * m_dropSpeed * dt });
-		else
-			enemy.move({ -m_speed * dt, m_speed * m_dropSpeed * dt });
+		enemy.move({ (enemy.isMovingRight() ? m_speed : -m_speed) * dt, m_speed * m_dropSpeed * dt });
 		if (enemy.requiresFlipping())
 			requiresDirectionFlipping = true;
 		if (enemy.reachedBottom())
 			m_reachedBottom = true;
+
+		if ((enemy.getPosition().x >= targetPosition - targetRangeEpsilon) && (enemy.getPosition().x <= targetPosition + targetRangeEpsilon))
+		{
+			if (random.value(0.0, 100.0) < (enemy.getPosition().x - m_targetPosition) / targetAccuracyRange)
+				enemy.shoot();
+		}
 	}
 	if (requiresDirectionFlipping)
 		toggleDirection();

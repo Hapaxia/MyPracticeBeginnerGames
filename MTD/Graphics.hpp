@@ -28,6 +28,7 @@ private:
 	sf::RectangleShape m_player;
 	std::vector<sf::RectangleShape> m_bullets;
 	std::vector<sf::RectangleShape> m_enemies;
+	std::vector<sf::RectangleShape> m_enemyBullets;
 	sf::View m_view;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
