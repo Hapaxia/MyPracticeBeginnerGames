@@ -368,18 +368,20 @@ void Game::printScreenReady()
 {
 	cs.clear();
 	unsigned int row{ 2u };
+	cs << Cs::StretchType::Both;
 	for (auto& line : infoTitle)
 	{
-		cs.printStretchedAt({ getColumnToCenterString(infoTitle.back()), row++ }, line);
+		cs << Cs::Location(getColumnToCenterString(infoTitle.back()), row++) << line;
 		++row;
 	}
+	cs << Cs::StretchType::None;
 	row = 11u;
 	for (auto& line : infoKeys)
-		cs.printAt({ 10, row++ }, line);
+		cs << Cs::Location(10, row++) << line;
 
 	const std::string startString{ "Press FIRE to start" };
 	if (blink(1.0, 1.5))
-		cs.printAt({ getColumnToCenterString(startString), 20 }, startString);
+		cs << Cs::Location(getColumnToCenterString(startString), 20) << startString;
 }
 
 void Game::printScreenGameOver()
@@ -387,15 +389,15 @@ void Game::printScreenGameOver()
 	cs.clear();
 	const std::string gameOverString{ "GAME OVER!" };
 	const std::string continueString{ "Press FIRE" };
-	cs.printStretchedAt({ getColumnToCenterString(gameOverString), cs.getMode().y / 2u - 1u }, gameOverString);
-	cs.printAt({ getColumnToCenterString(continueString), 20 }, continueString);
+	cs << Cs::StretchType::Both << Cs::Location(getColumnToCenterString(gameOverString), cs.getMode().y / 2u - 1u) << gameOverString << Cs::StretchType::None;
+	cs << Cs::Location(getColumnToCenterString(continueString), 20) << continueString;
 }
 
 void Game::printScreenRunning()
 {
 	cs.clear();
-	cs.printAt({ 0, 0 }, "SCORE " + pl::padStringLeft(pl::stringFrom(score), 4, '0'));
-	cs.printAt({ cs.getMode().x - 9, 0 }, "7590 HIGH");
+	cs << Cs::CursorCommand::Home << "SCORE " << pl::padStringLeft(pl::stringFrom(score), 4, '0');
+	cs << Cs::Location(cs.getMode().x - 9, 0) << "7590 HIGH";
 }
 
 void Game::printScreenPaused()
@@ -403,8 +405,8 @@ void Game::printScreenPaused()
 	cs.clear();
 	const std::string pausedString{ "PAUSED!" };
 	const std::string resumeString{ "Press P to resume" };
-	cs.printStretchedAt({ getColumnToCenterString(pausedString), cs.getMode().y / 2u - 1u }, pausedString);
-	cs.printAt({ getColumnToCenterString(resumeString), 20 }, resumeString);
+	cs << Cs::StretchType::Both << Cs::Location(getColumnToCenterString(pausedString), cs.getMode().y / 2u - 1u) << pausedString << Cs::StretchType::None;
+	cs << Cs::Location(getColumnToCenterString(resumeString), 20) << resumeString;
 }
 
 inline unsigned int Game::getColumnToCenterString(const std::string& string)
