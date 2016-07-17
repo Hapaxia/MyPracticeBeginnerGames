@@ -18,6 +18,8 @@ const std::vector<std::string> infoKeys
 	{ "pause P" }
 };
 
+const double gameOverKeyPressDelay{ 1.0 }; // seconds
+
 template <class T, class U>
 void addElementToVectorIfUnique(std::vector<T>& vector, const U& elementToAdd)
 {
@@ -130,7 +132,7 @@ void Game::run()
 						stateHasChanged = true;
 						timestep.resetTime();
 					}
-					else if (state == State::Over && timestep.getTime() > 1.0) // delay ability to skip game over screen to avoid skipping by accident
+					else if (state == State::Over && timestep.getTime() > gameOverKeyPressDelay) // delay ability to skip game over screen to avoid skipping by accident
 					{
 						reset();
 						state = State::Ready;
@@ -390,7 +392,8 @@ void Game::printScreenGameOver()
 	const std::string gameOverString{ "GAME OVER!" };
 	const std::string continueString{ "Press FIRE" };
 	cs << Cs::StretchType::Both << Cs::Location(getColumnToCenterString(gameOverString), cs.getMode().y / 2u - 1u) << gameOverString << Cs::StretchType::None;
-	cs << Cs::Location(getColumnToCenterString(continueString), 20) << continueString;
+	if (timestep.getTime() > gameOverKeyPressDelay)
+		cs << Cs::Location(getColumnToCenterString(continueString), 20) << continueString;
 }
 
 void Game::printScreenRunning()
