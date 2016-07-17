@@ -18,6 +18,7 @@ const std::vector<std::string> infoKeys
 	{ "pause P" }
 };
 
+const std::string windowTitle{ "MTD" };
 const double gameOverKeyPressDelay{ 1.0 }; // seconds
 
 template <class T, class U>
@@ -31,11 +32,8 @@ void addElementToVectorIfUnique(std::vector<T>& vector, const U& elementToAdd)
 } // namespace
 
 Game::Game()
-	: windowTitle("MTD")
-	, timestep()
+	: timestep()
 	, window(sf::VideoMode(800, 600), windowTitle, sf::Style::Default)
-	//, state(State::Running)
-	//, currentStateString("Running")
 	, stateHasChanged(false)
 	, state(State::Ready)
 	, currentStateString("Ready")
@@ -278,8 +276,8 @@ void Game::update()
 	// remove enemies hit by bullets
 	pl::RangeArea<double> enemyBoundingBox;
 	pl::RangeArea<double> bulletBoundingBox;
-	pl::Vector2d enemyHalfSize{ 0.0, 0.0 };
-	pl::Vector2d bulletHalfSize{ 0.0, 0.0 };
+	pl::Vector2d enemyHalfSize;
+	pl::Vector2d bulletHalfSize;
 	std::vector<unsigned int> enemiesToRemove;
 	std::vector<unsigned int> bulletsToRemove;
 	for (auto enemy = enemies.begin(), enemiesEnd = enemies.end(); enemy != enemiesEnd; ++enemy)

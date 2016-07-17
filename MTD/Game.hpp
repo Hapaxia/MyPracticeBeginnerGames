@@ -37,7 +37,6 @@ private:
 	} state;
 
 	Graphics graphics;
-	const std::string windowTitle;
 	kairos::Timestep timestep;
 	sf::RenderWindow window;
 	std::string currentStateString;
