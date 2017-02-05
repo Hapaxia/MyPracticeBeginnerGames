@@ -44,7 +44,7 @@ Game::Game()
 	, keys()
 	, resources()
 	, cs()
-	, fireEventPressed(false)
+	, allowPlayerBulletFire(false)
 	, score(0u)
 {
 	initKeys();
@@ -53,6 +53,7 @@ Game::Game()
 	if (!initConsoleScreen())
 		throw "Failed to initialise Console Screen.";
 	window.setMouseCursorVisible(false);
+	window.setKeyRepeatEnabled(false);
 }
 
 void Game::run()
@@ -99,11 +100,6 @@ void Game::run()
 				}
 				else if (event.key.code == keys.getKey("toggle enemy direction")) // toggle enemies' horizontal direction
 					enemies.toggleDirection();
-				else if (event.key.code == keys.getKey("player shoot"))
-				{
-					if (state != State::Running)
-						fireEventPressed = true;
-				}
 				else if (event.key.code == keys.getKey("pause"))
 				{
 					if (state == State::Paused)
@@ -119,16 +115,14 @@ void Game::run()
 						stateHasChanged = true;
 					}
 				}
-			}
-			else if (event.type == sf::Event::KeyReleased)
-			{
-				if (event.key.code == keys.getKey("player shoot") && fireEventPressed)
+				else if (event.key.code == keys.getKey("player shoot") /* && fireEventPressed */ )
 				{
 					if (state == State::Ready)
 					{
 						state = State::Running;
 						stateHasChanged = true;
 						timestep.resetTime();
+						allowPlayerBulletFire = false;
 					}
 					else if (state == State::Over && timestep.getTime() > gameOverKeyPressDelay) // delay ability to skip game over screen to avoid skipping by accident
 					{
@@ -136,8 +130,13 @@ void Game::run()
 						state = State::Ready;
 						stateHasChanged = true;
 					}
-					fireEventPressed = false;
 				}
+
+			}
+			else if (event.type == sf::Event::KeyReleased)
+			{
+				if (event.key.code == keys.getKey("player shoot"))
+					allowPlayerBulletFire = true;
 			}
 		}
 
@@ -246,7 +245,7 @@ void Game::update()
 		--controlDirection;
 	if (sf::Keyboard::isKeyPressed(keys.getKey("player right")))
 		++controlDirection;
-	if (sf::Keyboard::isKeyPressed(keys.getKey("player shoot")))
+	if (allowPlayerBulletFire && sf::Keyboard::isKeyPressed(keys.getKey("player shoot")))
 		bullets.shoot({ player.getPosition(), window.getView().getSize().y });
 
 	// update

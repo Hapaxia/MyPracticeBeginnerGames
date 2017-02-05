@@ -1,8 +1,8 @@
 /*
 
 modifications:
-add animated rotation to enemies
-moved enemy "angle" calculation from Graphics to Enemies
+changed pressing "fire" for state change to be at time of press rather than release
+very slightly reduced enemies' speed increase and drop increase giving slightly more time
 
 */
 
@@ -47,7 +47,7 @@ private:
 	pl::KeyMap keys;
 	pl::ResourceManagerBasic resources;
 	sw::ConsoleScreen cs;
-	bool fireEventPressed;
+	bool allowPlayerBulletFire;
 	unsigned int score;
 
 	void initKeys();

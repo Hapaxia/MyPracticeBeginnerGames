@@ -11,8 +11,8 @@ pl::Random random;
 } // namespace
 
 Enemies::Enemies(sf::RenderWindow& window)
-	: m_speedIncreaseMultiplier(0.9)
-	, m_dropSpeedIncreaseMultiplier(1.1)
+	: m_speedIncreaseMultiplier(0.89)
+	, m_dropSpeedIncreaseMultiplier(1.09)
 	, m_rotationSpeed(10.0)
 	, m_speed(40.0)
 	, m_dropSpeed(0.05)
