@@ -1,8 +1,7 @@
 /*
 
 modifications:
-changed pressing "fire" for state change to be at time of press rather than release
-very slightly reduced enemies' speed increase and drop increase giving slightly more time
+fixed state machine replacing the enum state
 
 */
 
@@ -24,44 +23,35 @@ very slightly reduced enemies' speed increase and drop increase giving slightly 
 class Game
 {
 public:
-	Game();
-	void run();
-
-private:
-	enum class State
-	{
-		Ready,
-		Running,
-		Paused,
-		Over
-	} state;
-
-	Graphics graphics;
-	kairos::Timestep timestep;
+	pl::ResourceManagerBasic resources;
 	sf::RenderWindow window;
-	std::string currentStateString;
-	bool stateHasChanged;
 	Player player;
 	Bullets bullets;
 	Enemies enemies;
 	pl::KeyMap keys;
-	pl::ResourceManagerBasic resources;
 	sw::ConsoleScreen cs;
 	bool allowPlayerBulletFire;
 	unsigned int score;
+	Graphics graphics;
+	kairos::Timestep timestep;
+
+	Game();
+
+	bool isRunning() const { return isGameRunning; }
+	void quit() { isGameRunning = false; }
+
+	void handleEvents();
+	void update();
+	void draw();
+
+	void reset();
+
+private:
+	bool isGameRunning;
 
 	void initKeys();
 	bool initResources();
 	bool initConsoleScreen();
-	void reset();
-	void update();
-	void printScreen();
-	void printScreenReady();
-	void printScreenGameOver();
-	void printScreenRunning();
-	void printScreenPaused();
-	unsigned int getColumnToCenterString(const std::string& string);
-	bool blink(double hold, double duration);
 };
 
 #endif // MTD_GAME_HPP
