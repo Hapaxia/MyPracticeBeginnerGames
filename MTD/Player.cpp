@@ -5,7 +5,7 @@ namespace
 {
 
 const pl::Vector2d playerSize{ 64.0, 32.0 };
-const double initialSpeed{ 300.0 };
+constexpr double initialSpeed{ 300.0 };
 const double minimumPosition{ 0.0 + playerSize.x / 2.0 };
 
 }

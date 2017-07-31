@@ -10,7 +10,12 @@ int main()
 	try
 	{
 		Game game;
-		game.run();
+		while (game.isRunning())
+		{
+			game.update();
+			game.draw();
+			game.handleEvents();
+		}
 	}
 	catch (int e)
 	{
