@@ -6,7 +6,7 @@ namespace
 {
 
 const std::string windowTitle{ "MTD" };
-const double timeStepSize{ 0.01 };
+constexpr double timeStepSize{ 0.01 };
 
 std::unique_ptr<GameState::Base> pGameState{ nullptr };
 

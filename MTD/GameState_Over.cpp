@@ -9,7 +9,7 @@ namespace
 const std::string gameOverString{ "GAME OVER!" };
 const std::string continueString{ "Press FIRE" };
 
-const double gameOverKeyPressDelay{ 1.0 }; // seconds
+constexpr double gameOverKeyPressDelay{ 1.0 }; // seconds
 
 } // namespace
 

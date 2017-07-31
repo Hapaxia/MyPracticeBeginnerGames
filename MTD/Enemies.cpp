@@ -40,10 +40,10 @@ void Enemies::update(const double dt, const double targetPosition)
 	if (m_reachedBottom)
 		return;
 
-	const double targetAccuracyRange{ 250.0 };
+	constexpr double targetAccuracyRange{ 250.0 };
 	m_targetPosition = targetPosition + random.value(-targetAccuracyRange, targetAccuracyRange);
 
-	const double targetRangeEpsilon{ 50.0 };
+	constexpr double targetRangeEpsilon{ 50.0 };
 
 	bool requiresDirectionFlipping = false;
 	for (auto& enemy : m_enemies)
@@ -113,10 +113,10 @@ bool Enemies::getReachedBottom() const
 
 void Enemies::priv_addEnemies()
 {
-	const unsigned int numberOfEnemies = 40u;
-	const unsigned int enemiesPerRow = 8u;
-	const double horizontalSpacing = 65.0;
-	const double verticalSpacing = 65.0;
+	constexpr unsigned int numberOfEnemies = 40u;
+	constexpr unsigned int enemiesPerRow = 8u;
+	constexpr double horizontalSpacing = 65.0;
+	constexpr double verticalSpacing = 65.0;
 	const pl::Vector2d positionOfTopLeft = { 120.0, 80.0 };
 	for (unsigned int i = 0; i < numberOfEnemies; ++i)
 		m_enemies.emplace_back(Enemy(m_view, positionOfTopLeft + pl::Vector2d{ horizontalSpacing * (i % enemiesPerRow), verticalSpacing * (i / enemiesPerRow) }));

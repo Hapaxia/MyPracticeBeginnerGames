@@ -4,7 +4,7 @@
 namespace
 {
 
-const double bulletDropSpeed{ 300.0 };
+constexpr double bulletDropSpeed{ 300.0 };
 const pl::Vector2d bulletSize{ 8.0, 32.0 };
 
 } // namespace

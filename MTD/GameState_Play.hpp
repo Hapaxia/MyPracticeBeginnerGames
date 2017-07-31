@@ -7,15 +7,15 @@
 namespace GameState
 {
 
-class Play : public Base
+class Play final : public Base
 {
 public:
 	Play(Game& game);
 
-	virtual std::unique_ptr<GameState::Base> handleEvents();
-	virtual std::unique_ptr<Base> update();
-	virtual void draw();
-	virtual void printScreen();
+	virtual std::unique_ptr<GameState::Base> handleEvents() final override;
+	virtual std::unique_ptr<Base> update() final override;
+	virtual void draw() final override;
+	virtual void printScreen() final override;
 };
 
 } // namespace GameState

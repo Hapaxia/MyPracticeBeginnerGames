@@ -22,7 +22,7 @@ const std::vector<std::string> infoKeys
 };
 const std::string startString{ "Press FIRE to start" };
 
-const double startKeyPressDelay{ 1.0 }; // seconds
+constexpr double startKeyPressDelay{ 1.0 }; // seconds
 
 } // namespace
 
