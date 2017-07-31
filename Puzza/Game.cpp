@@ -28,7 +28,7 @@ url()
 	url.setString("Source available at https://github.com/Hapaxia/MyPracticeBeginnerGames");
 	url.setOrigin(pl::Sfml::floorVector(pl::Anchor::Local::getBottomCenter(url)));
 	url.setPosition(floor(window.getView().getSize().x / 2.f), window.getView().getSize().y);
-	url.setColor(pl::Colors::DarkGreen);
+	url.setFillColor(pl::Colors::DarkGreen);
 	window.setMouseCursorVisible(false);
 	ball.setPosition(sf::Vector2f(window.getSize() / 2u));
 	opponent.setAcceleration(100.f);
@@ -213,7 +213,7 @@ void Game::updateBall()
 	if ((ball.getPosition().y < ball.getRadius()) || (ball.getPosition().y > window.getView().getSize().y - ball.getRadius()))
 	{
 		playSound("wall");
-		ball.setPosition({ ball.getPosition().x, pl::clamp(ball.getPosition().y, ball.getRadius(), window.getView().getSize().y - ball.getRadius()) });
+		ball.setPosition({ ball.getPosition().x, pl::Range<float>{ ball.getRadius(), window.getView().getSize().y - ball.getRadius() }.clamp(ball.getPosition().y) });
 		ball.setDirection(ball.getDirection() - ball.getSpin() * 0.5f);
 		ball.flipDirectionVertically();
 		ball.setSpin(ball.getSpin() * 0.1f);
@@ -262,13 +262,13 @@ void Game::updateBall()
 			if (graphics.isHigherThanPlayer(ball.getPosition().y))
 			{
 				ball.setPosition({ ball.getPosition().x, graphics.getPlayerTop() - ball.getRadius() });
-				if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				if (pl::Range<float>{ 90.f, 270.f }.contains(ball.getDirection()))
 					ball.flipDirectionVertically();
 			}
 			else if (graphics.isLowerThanPlayer(ball.getPosition().y))
 			{
 				ball.setPosition({ ball.getPosition().x, graphics.getPlayerBottom() + ball.getRadius() });
-				if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				if (!pl::Range<float>{ 90.f, 270.f }.contains(ball.getDirection()))
 					ball.flipDirectionVertically();
 			}
 		}
@@ -296,13 +296,13 @@ void Game::updateBall()
 			if (graphics.isHigherThanOpponent(ball.getPosition().y))
 			{
 				ball.setPosition({ ball.getPosition().x, graphics.getOpponentTop() - ball.getRadius() });
-				if (pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				if (pl::Range<float>{ 90.f, 270.f }.contains(ball.getDirection()))
 					ball.flipDirectionVertically();
 			}
 			else if (graphics.isLowerThanOpponent(ball.getPosition().y))
 			{
 				ball.setPosition({ ball.getPosition().x, graphics.getOpponentBottom() + ball.getRadius() });
-				if (!pl::inRange(ball.getDirection(), pl::Range<float>{90.f, 270.f}))
+				if (!pl::Range<float>{ 90.f, 270.f }.contains(ball.getDirection()))
 					ball.flipDirectionVertically();
 			}
 		}

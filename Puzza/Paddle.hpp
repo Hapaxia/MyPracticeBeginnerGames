@@ -1,8 +1,6 @@
 #ifndef PUZZA_PADDLE_HPP
 #define PUZZA_PADDLE_HPP
 
-#include <Plinth/Generic.hpp>
-
 class Paddle
 {
 public:
