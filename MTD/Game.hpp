@@ -1,7 +1,7 @@
 /*
 
 modifications:
-fixed state machine replacing the enum state
+added game death state
 
 */
 
