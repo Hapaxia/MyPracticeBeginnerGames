@@ -32,6 +32,7 @@ public:
 	sw::ConsoleScreen cs;
 	bool allowPlayerBulletFire;
 	unsigned int score;
+	unsigned int lives;
 	Graphics graphics;
 	kairos::Timestep timestep;
 

@@ -14,6 +14,7 @@ public:
 	pl::Vector2d getPosition() const;
 	pl::Vector2d getSize() const;
 	pl::Vector2d getBulletPosition() const;
+	pl::Vector2d getBulletSize() const;
 	bool isMovingRight() const;
 	void flipDirection();
 	bool requiresFlipping() const;
@@ -21,6 +22,7 @@ public:
 	bool isAlive() const;
 	bool reachedBottom() const;
 	bool isBulletAlive() const;
+	void killBullet();
 
 private:
 	const pl::Vector2d m_size;

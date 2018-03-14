@@ -68,7 +68,8 @@ std::unique_ptr<Base> Play::update()
 	{
 		None,
 		EnemiesWon,
-		EnemiesDestroyed
+		EnemiesDestroyed,
+		PlayerDeath
 	} progression = Progression::None;
 
 	// prepare player's bounding box
@@ -121,10 +122,40 @@ std::unique_ptr<Base> Play::update()
 	}
 	for (auto& bulletToRemove : bulletsToRemove)
 		game.bullets.killBullet(bulletToRemove);
+
+	// kill player if in contact with enemy bullet
+	bool isPlayerDead{ false };
+	for (auto enemy{ game.enemies.begin() }, enemiesEnd{ game.enemies.end() }; enemy != enemiesEnd; ++enemy)
+	{
+		const pl::Vector2d bulletPosition{ enemy->getBulletPosition() };
+		const pl::Vector2d bulletSize{ enemy->getBulletSize() };
+		const pl::Vector2d bulletCornerOffsetFromCenter{ bulletSize / 2.0 };
+
+		// prepare enemy bullet's bounding box
+		pl::RangeArea<double> bulletBoundingBox;
+		bulletBoundingBox.setLeftBottom(bulletPosition - bulletCornerOffsetFromCenter);
+		bulletBoundingBox.setRightTop(bulletPosition + bulletCornerOffsetFromCenter);
+
+		if (enemy->isBulletAlive() && playerBoundingBox.overlaps(bulletBoundingBox))
+		{
+			isPlayerDead = true;
+			enemy->killBullet(); // remove bullet that came into contact with player
+			break;
+		}
+	}
+
+	// decide on the progression
 	if (game.enemies.getNumberOfEnemiesAlive() == 0)
 		progression = Progression::EnemiesDestroyed;
-	if (game.enemies.getReachedBottom())
+	else if (game.enemies.getReachedBottom())
 		progression = Progression::EnemiesWon;
+	else if (isPlayerDead)
+	{
+		if (--game.lives > 0u)
+			progression = Progression::PlayerDeath;
+		else
+			progression = Progression::EnemiesWon;
+	}
 
 	// graphics
 	game.graphics.updateView(game.window.getView());
@@ -133,17 +164,17 @@ std::unique_ptr<Base> Play::update()
 	game.graphics.updateEnemies(game.enemies);
 
 	// progress state
-	if (progression == Progression::EnemiesDestroyed)
+	switch (progression)
 	{
+	case Progression::EnemiesDestroyed:
+	case Progression::EnemiesWon:
 		game.timestep.resetTime();
 		return std::make_unique<GameState::Over>(game);
+	case Progression::PlayerDeath:
+		return std::make_unique<GameState::Death>(game);
+	default:
+		return nullptr;
 	}
-	if (progression == Progression::EnemiesWon)
-	{
-		game.timestep.resetTime();
-		return std::make_unique<GameState::Over>(game);
-	}
-	return nullptr;
 }
 
 void Play::draw()
@@ -157,6 +188,9 @@ void Play::printScreen()
 	game.cs.clear();
 	game.cs << Cs::CursorCommand::Home << "SCORE " << pl::padStringLeft(pl::stringFrom(game.score), 4, '0');
 	game.cs << Cs::Location(game.cs.getMode().x - 9, 0) << "7590 HIGH";
+
+	const std::string livesString{ "LIVES: " + pl::stringFrom(game.lives) };
+	game.cs << Cs::Location(getColumnToCenterString(game.cs, livesString), 1) << livesString;
 }
 
 } // namespace GameState

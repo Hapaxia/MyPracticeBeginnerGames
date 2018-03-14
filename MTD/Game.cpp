@@ -6,6 +6,7 @@ namespace
 {
 
 const std::string windowTitle{ "MTD" };
+constexpr unsigned int startingNumberOfLives{ 3u };
 constexpr double timeStepSize{ 0.01 };
 
 std::unique_ptr<GameState::Base> pGameState{ nullptr };
@@ -25,6 +26,7 @@ Game::Game()
 	, cs()
 	, allowPlayerBulletFire(false)
 	, score(0u)
+	, lives(startingNumberOfLives)
 {
 	initKeys();
 	if (!initResources())
@@ -117,4 +119,5 @@ void Game::reset()
 	graphics.clearEnemies();
 	graphics.clearBullets();
 	score = 0;
+	lives = startingNumberOfLives;
 }

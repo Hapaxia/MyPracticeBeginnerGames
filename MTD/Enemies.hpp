@@ -15,6 +15,8 @@ public:
 	void killEnemy(unsigned int enemyIndex);
 	std::vector<Enemy>::const_iterator begin() const { return m_enemies.begin(); }
 	std::vector<Enemy>::const_iterator end() const { return m_enemies.end(); }
+	std::vector<Enemy>::iterator begin() { return m_enemies.begin(); }
+	std::vector<Enemy>::iterator end() { return m_enemies.end(); }
 	std::size_t size() const { return m_enemies.size(); }
 
 	void toggleDirection();

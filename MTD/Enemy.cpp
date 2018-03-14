@@ -62,6 +62,11 @@ pl::Vector2d Enemy::getBulletPosition() const
 	return m_bullet;
 }
 
+pl::Vector2d Enemy::getBulletSize() const
+{
+	return bulletSize;
+}
+
 bool Enemy::isMovingRight() const
 {
 	return m_isMovingRight;
@@ -96,4 +101,9 @@ bool Enemy::reachedBottom() const
 bool Enemy::isBulletAlive() const
 {
 	return m_isBulletAlive;
+}
+
+void Enemy::killBullet()
+{
+	m_isBulletAlive = false;
 }
