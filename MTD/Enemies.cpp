@@ -45,6 +45,9 @@ void Enemies::update(const double dt, const double targetPosition)
 
 	constexpr double targetRangeEpsilon{ 50.0 };
 
+	constexpr double shootChanceRangeBase{ 2.0 }; // the higher the shootChanceRange, the less likely to fire
+	const double shootChanceRange{ shootChanceRangeBase * getNumberOfEnemiesAlive() };
+
 	bool requiresDirectionFlipping = false;
 	for (auto& enemy : m_enemies)
 	{
@@ -61,7 +64,7 @@ void Enemies::update(const double dt, const double targetPosition)
 
 		if ((enemy.getPosition().x >= targetPosition - targetRangeEpsilon) && (enemy.getPosition().x <= targetPosition + targetRangeEpsilon))
 		{
-			if (random.value(0.0, 100.0) < (enemy.getPosition().x - m_targetPosition) / targetAccuracyRange)
+			if (random.value(0.0, shootChanceRange) < (enemy.getPosition().x - m_targetPosition) / targetAccuracyRange)
 				enemy.shoot();
 		}
 	}
