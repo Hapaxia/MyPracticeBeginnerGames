@@ -8,6 +8,7 @@ namespace
 
 const std::string gameOverString{ "GAME OVER!" };
 const std::string continueString{ "Press FIRE" };
+const std::string finalScoreString{ "Final score" };
 
 constexpr double gameOverKeyPressDelay{ 1.0 }; // seconds
 
@@ -66,6 +67,9 @@ void Over::printScreen()
 	game.cs << Cs::StretchType::Both << Cs::Location(getColumnToCenterString(game.cs, gameOverString), game.cs.getMode().y / 2u - 1u) << gameOverString << Cs::StretchType::None;
 	if (game.timestep.getTime() > gameOverKeyPressDelay)
 		game.cs << Cs::Location(getColumnToCenterString(game.cs, continueString), 20) << continueString;
+
+	const std::string finalScore{ finalScoreString + ": " + pl::stringFrom(game.score) };
+	game.cs << Cs::Location(getColumnToCenterString(game.cs, finalScore), 8) << finalScore;
 }
 
 } // namespace GameState
