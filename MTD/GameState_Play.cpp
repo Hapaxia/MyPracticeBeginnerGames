@@ -194,7 +194,7 @@ void Play::printScreen()
 	game.cs << Cs::Location(game.cs.getMode().x - 9, 0) << pl::padStringLeft(pl::stringFrom(game.highScore), 4, '0') << " HIGH";
 
 	const std::string livesString{ "LIVES: " + pl::stringFrom(game.lives) };
-	game.cs << Cs::Location(getColumnToCenterString(game.cs, livesString), 1) << livesString;
+	game.cs << Cs::Location(getColumnToCenterString(game.cs, livesString) + 1u, 0u) << livesString;
 }
 
 } // namespace GameState
