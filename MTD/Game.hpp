@@ -31,6 +31,7 @@ public:
 	pl::KeyMap keys;
 	sw::ConsoleScreen cs;
 	bool allowPlayerBulletFire;
+	unsigned int highScore;
 	unsigned int score;
 	unsigned int lives;
 	Graphics graphics;

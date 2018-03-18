@@ -123,6 +123,10 @@ std::unique_ptr<Base> Play::update()
 	for (auto& bulletToRemove : bulletsToRemove)
 		game.bullets.killBullet(bulletToRemove);
 
+	// update high score
+	if (game.score > game.highScore)
+		game.highScore = game.score;
+
 	// kill player if in contact with enemy bullet
 	bool isPlayerDead{ false };
 	for (auto enemy{ game.enemies.begin() }, enemiesEnd{ game.enemies.end() }; enemy != enemiesEnd; ++enemy)
@@ -187,7 +191,7 @@ void Play::printScreen()
 {
 	game.cs.clear();
 	game.cs << Cs::CursorCommand::Home << "SCORE " << pl::padStringLeft(pl::stringFrom(game.score), 4, '0');
-	game.cs << Cs::Location(game.cs.getMode().x - 9, 0) << "7590 HIGH";
+	game.cs << Cs::Location(game.cs.getMode().x - 9, 0) << pl::padStringLeft(pl::stringFrom(game.highScore), 4, '0') << " HIGH";
 
 	const std::string livesString{ "LIVES: " + pl::stringFrom(game.lives) };
 	game.cs << Cs::Location(getColumnToCenterString(game.cs, livesString), 1) << livesString;

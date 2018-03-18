@@ -25,6 +25,7 @@ Game::Game()
 	, resources()
 	, cs()
 	, allowPlayerBulletFire(false)
+	, highScore(100u) // starting high score
 	, score(0u)
 	, lives(startingNumberOfLives)
 {
