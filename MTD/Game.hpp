@@ -1,7 +1,7 @@
 /*
 
 modifications:
-added game death state
+separated game over states for win and lose
 
 */
 
