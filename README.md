@@ -3,7 +3,7 @@ Games:
 Based on Pong
 
 Work In Progress:
-- **[MTD][MTD branch]**  
+- **MTD**  
 Based on Space Invaders
 
 External libraries (all open-source) will be used for the development of these games:
@@ -30,4 +30,3 @@ External libraries (all open-source) will be used for the development of these g
 [Dev]: https://github.com/Hapaxia/Dev
 [SFML Forum Thread]: http://en.sfml-dev.org/forums/index.php?topic=18844.0
 [Puzza (latest release)]: https://github.com/Hapaxia/MyPracticeBeginnerGames/releases/tag/puzza-v1.0.0
-[MTD branch]: https://github.com/Hapaxia/MyPracticeBeginnerGames/tree/mtd
