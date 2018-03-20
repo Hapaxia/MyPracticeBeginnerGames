@@ -1,5 +1,8 @@
 #include "Paddle.hpp"
 
+#include <Plinth/Generic.hpp>
+#include <Plinth/Range.hpp>
+
 Paddle::Paddle():
 m_speed(0.f),
 m_maxSpeed(10.f),
@@ -42,15 +45,15 @@ void Paddle::update(float dt)
 	}
 
 	// clamp speed
-	m_speed = pl::clamp(m_speed, pl::Range<float>{ -m_maxSpeed, m_maxSpeed });
+	m_speed = pl::Range<float>{ -m_maxSpeed, m_maxSpeed }.clamp(m_speed);
 
 	// move
 	m_position += m_speed * dt;
 
 	// clamp position
-	if (!pl::inRange(m_position, pl::Range<float>{-1.f, 1.f}))
+	if (!pl::Range<float>{ -1.f, 1.f }.contains(m_position))
 	{
-		m_position = pl::clamp(m_position, pl::Range<float>{ -1.f, 1.f });
+		m_position = pl::Range<float>{ -1.f, 1.f }.clamp(m_position);
 		m_speed = 0.f;
 	}
 }

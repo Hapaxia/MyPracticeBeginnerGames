@@ -2,8 +2,6 @@
 #define PUZZA_BALL_HPP
 
 #include <SFML/System/Vector2.hpp>
-#include <math.h>
-#include <Plinth/Generic.hpp>
 
 class Ball
 {

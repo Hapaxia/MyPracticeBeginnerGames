@@ -1,5 +1,9 @@
 #include "Ball.hpp"
 
+#include <cmath>
+#include <Plinth/Generic.hpp>
+#include <Plinth/Range.hpp>
+
 Ball::Ball():
 m_maximumSpin(50.f),
 m_position({ 0.f, 0.f }),
@@ -42,7 +46,7 @@ void Ball::setPosition(sf::Vector2f position)
 
 void Ball::setDirection(float direction)
 {
-	m_direction = pl::clampCycle(direction, pl::Range<float>{ 0.f, 360.f });
+	m_direction = pl::Range<float>{ 0.f, 360.f }.clampCycle(direction);
 }
 
 void Ball::changeSpeed(float speedChange)
@@ -57,7 +61,7 @@ void Ball::setSpeed(float speed)
 
 void Ball::setSpin(float spin)
 {
-	m_spin = pl::clamp(spin, -m_maximumSpin, m_maximumSpin);
+	m_spin = pl::Range<float>{ -m_maximumSpin, m_maximumSpin }.clamp(spin);
 }
 
 void Ball::changeSpin(float spinChange)

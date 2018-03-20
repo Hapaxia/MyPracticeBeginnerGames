@@ -1,6 +1,7 @@
 #include "Graphics.hpp"
 #include <Plinth/Sfml/Anchor.hpp>
 #include <Plinth/Generic.hpp>
+#include <Plinth/Range.hpp>
 
 Graphics::Graphics(Resources& resources) :
 m_ball(resources.getTexture("spritesheet")),
@@ -106,7 +107,7 @@ bool Graphics::opponentCollidesWith(const sf::FloatRect& bounds) const
 
 bool Graphics::isInLineWithPlayer(const float y) const
 {
-	return pl::inRange(y, pl::Range<float>{pl::Anchor::Global::getTopCenter(m_player).y, pl::Anchor::Global::getBottomCenter(m_player).y});
+	return pl::Range<float>{ pl::Anchor::Global::getTopCenter(m_player).y, pl::Anchor::Global::getBottomCenter(m_player).y }.contains(y);
 }
 
 bool Graphics::isHigherThanPlayer(const float y) const
@@ -131,7 +132,7 @@ bool Graphics::isToTheRightOfPlayerBack(float x) const
 
 bool Graphics::isInLineWithOpponent(const float y) const
 {
-	return pl::inRange(y, pl::Range<float>{pl::Anchor::Global::getTopCenter(m_opponent).y, pl::Anchor::Global::getBottomCenter(m_opponent).y});
+	return pl::Range<float>{ pl::Anchor::Global::getTopCenter(m_opponent).y, pl::Anchor::Global::getBottomCenter(m_opponent).y }.contains(y);
 }
 
 bool Graphics::isHigherThanOpponent(const float y) const
