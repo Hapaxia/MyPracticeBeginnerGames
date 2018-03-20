@@ -171,6 +171,8 @@ std::unique_ptr<Base> Play::update()
 	switch (progression)
 	{
 	case Progression::EnemiesDestroyed:
+		game.timestep.resetTime();
+		return std::make_unique<GameState::Win>(game);
 	case Progression::EnemiesWon:
 		game.timestep.resetTime();
 		return std::make_unique<GameState::Over>(game);

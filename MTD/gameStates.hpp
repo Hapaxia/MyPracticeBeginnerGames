@@ -5,6 +5,7 @@
 #include "GameState_Title.hpp"
 #include "GameState_Play.hpp"
 #include "GameState_Over.hpp"
+#include "GameState_Win.hpp"
 #include "GameState_Pause.hpp"
 #include "GameState_Death.hpp"
 
