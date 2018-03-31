@@ -5,6 +5,7 @@
 #include <Plinth/Sfml/Anchor.hpp>
 #include "Bullets.hpp"
 #include "Enemies.hpp"
+#include "Level.hpp"
 
 #include <Dev.hpp>
 
@@ -24,6 +25,7 @@ Graphics::Graphics()
 	, m_bullets()
 	, m_enemies()
 	, m_enemyBullets()
+	, m_levelVerticalOffset(0.f)
 {
 	m_player.setFillColor(pl::Colors::Cyan);
 }
@@ -93,6 +95,14 @@ void Graphics::updateEnemies(const Enemies& enemies)
 	}
 }
 
+void Graphics::updateLevel()
+{
+	m_level.update();
+
+	m_level.setOrigin({ m_level.getSize().x / 2.f, 0.f });
+	m_level.setPosition({ m_view.getCenter().x, static_cast<float>(m_levelVerticalOffset) });
+}
+
 void Graphics::clearBullets()
 {
 	m_bullets.clear();
@@ -110,6 +120,19 @@ sf::Vector2f Graphics::getPlayerSize() const
 }
 */
 
+void Graphics::initLevel(const Level& level, const sf::Texture& texture)
+{
+	m_level.setLevel(level.getData(), level.getWidth());
+	m_level.setSize({ 800.f, 64.f });
+	m_level.setGridSize({ 100u, 8u });
+	m_level.setTexture(texture);
+	m_level.setNumberOfTextureTilesPerRow(8u);
+	m_level.setTextureTileSize({ 8u, 8u });
+	m_level.setColor(sf::Color(128, 160, 0));
+	m_levelVerticalOffset = static_cast<float>(level.getVerticalOffset());
+	m_level.update();
+}
+
 void Graphics::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for (auto& enemy : m_enemies)
@@ -118,5 +141,6 @@ void Graphics::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		target.draw(enemyBullet);
 	for (auto& bullet : m_bullets)
 		target.draw(bullet);
+	target.draw(m_level);
 	target.draw(m_player);
 }

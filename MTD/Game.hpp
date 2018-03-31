@@ -1,7 +1,8 @@
 /*
 
 modifications:
-separated game over states for win and lose
+added level and tile map for covers
+reduced width of player to allow to be fully covered
 
 */
 
@@ -16,6 +17,7 @@ separated game over states for win and lose
 #include "Player.hpp"
 #include "Bullets.hpp"
 #include "Enemies.hpp"
+#include "Level.hpp"
 #include <Plinth/Sfml/KeyMap.hpp>
 #include <vector>
 #include <SelbaWard/ConsoleScreen.hpp>
@@ -36,6 +38,7 @@ public:
 	unsigned int lives;
 	Graphics graphics;
 	kairos::Timestep timestep;
+	Level level;
 
 	Game();
 

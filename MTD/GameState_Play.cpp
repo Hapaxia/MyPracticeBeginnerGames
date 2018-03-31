@@ -114,14 +114,6 @@ std::unique_ptr<Base> Play::update()
 			++bulletNumber;
 		}
 	}
-	for (auto& enemyToRemove : enemiesToRemove)
-	{
-		game.enemies.killEnemy(enemyToRemove);
-		game.score += 10;
-		game.score += static_cast<unsigned int>(game.enemies.getDropSpeed() * 100 + game.enemies.getSpeed() / 50);
-	}
-	for (auto& bulletToRemove : bulletsToRemove)
-		game.bullets.killBullet(bulletToRemove);
 
 	// update high score
 	if (game.score > game.highScore)
@@ -148,6 +140,85 @@ std::unique_ptr<Base> Play::update()
 		}
 	}
 
+	// test enemy bullets collision with covers
+	for (auto& enemy{ game.enemies.begin() }, enemiesEnd{ game.enemies.end() }; enemy != enemiesEnd; ++enemy)
+	{
+		const pl::Vector2d bulletPosition{ enemy->getBulletPosition() };
+		const pl::Vector2d bulletSize{ enemy->getBulletSize() };
+		const pl::Vector2d bulletCornerOffsetFromCenter{ bulletSize / 2.0 };
+		const pl::Vector2d bulletBottomCenter{ bulletPosition.x, bulletPosition.y + bulletCornerOffsetFromCenter.y };
+
+		if (enemy->isBulletAlive())
+		{
+			if (game.level.isCoordInRange(bulletBottomCenter))
+			{
+				const pl::Vector2u tilePosition{ game.level.getTilePositionAtCoord(bulletBottomCenter) };
+				if (game.level.getTileHealth(tilePosition) > 0)
+				{
+					for (unsigned int y{ 0u }; y <= tilePosition.y; ++y)
+						game.level.setTile({ tilePosition.x, y }, 0u);
+					game.level.reduceTileHealth({ tilePosition.x - 2, tilePosition.y }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x + 2, tilePosition.y }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y - 1 }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y - 1 }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y + 1 }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y + 1 }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x, tilePosition.y + 1 }, 2u);
+					enemy->killBullet();
+				}
+			}
+		}
+	}
+
+	// test player bullets collision with covers
+	unsigned int bulletNumber{ 0u };
+	for (auto& bullet : game.bullets)
+	{
+		if (bullet.isAlive())
+		{
+			const pl::Vector2d bulletPosition{ bullet.getPosition() };
+			const pl::Vector2d bulletSize{ bullet.getSize() };
+			const pl::Vector2d bulletCornerOffsetFromCenter{ bulletSize / 2.0 };
+			const pl::Vector2d bulletTopCenter{ bulletPosition.x + bulletCornerOffsetFromCenter.x, bulletPosition.y };
+
+			if (game.level.isCoordInRange(bulletTopCenter))
+			{
+				const pl::Vector2u tilePosition{ game.level.getTilePositionAtCoord(bulletTopCenter) };
+				if (game.level.getTileHealth(tilePosition) > 0)
+				{
+					if (tilePosition.y < game.level.getHeight() - 1)
+					{
+						for (unsigned int y{ tilePosition.y }; y < game.level.getHeight(); ++y)
+							game.level.setTile({ tilePosition.x, y }, 0u);
+					}
+					game.level.reduceTileHealth({ tilePosition.x - 2, tilePosition.y }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x + 2, tilePosition.y }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y + 1 }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y + 1 }, 2u);
+					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y - 1 }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y - 1 }, 1u);
+					game.level.reduceTileHealth({ tilePosition.x, tilePosition.y - 1 }, 2u);
+					addElementToVectorIfUnique(bulletsToRemove, bulletNumber);
+				}
+			}
+		}
+		++bulletNumber;
+	}
+
+	// remove unused entities
+	for (auto& enemyToRemove : enemiesToRemove)
+	{
+		game.enemies.killEnemy(enemyToRemove);
+		game.score += 10;
+		game.score += static_cast<unsigned int>(game.enemies.getDropSpeed() * 100 + game.enemies.getSpeed() / 50);
+	}
+	for (auto& bulletToRemove : bulletsToRemove)
+		game.bullets.killBullet(bulletToRemove);
+
 	// decide on the progression
 	if (game.enemies.getNumberOfEnemiesAlive() == 0)
 		progression = Progression::EnemiesDestroyed;
@@ -166,6 +237,7 @@ std::unique_ptr<Base> Play::update()
 	game.graphics.updatePlayer(game.player);
 	game.graphics.updateBullets(game.bullets);
 	game.graphics.updateEnemies(game.enemies);
+	game.graphics.updateLevel();
 
 	// progress state
 	switch (progression)

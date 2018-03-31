@@ -2,6 +2,8 @@
 
 #include "gameStates.hpp"
 
+#include <algorithm>
+
 namespace
 {
 
@@ -28,6 +30,7 @@ Game::Game()
 	, highScore(100u) // starting high score
 	, score(0u)
 	, lives(startingNumberOfLives)
+	, level()
 {
 	initKeys();
 	if (!initResources())
@@ -38,6 +41,7 @@ Game::Game()
 	window.setKeyRepeatEnabled(false);
 	timestep.setStep(timeStepSize);
 	cs.clear();
+	graphics.initLevel(level, resources.getTexture("level"));
 
 	pGameState = std::make_unique<GameState::Title>(*this);
 }
@@ -86,6 +90,7 @@ bool Game::initResources()
 	try
 	{
 		resources.addTexture("font sheet", "resources/fontsheet.png");
+		resources.addTexture("level", "resources/level.png");
 	}
 	catch (pl::Exception&)
 	{
