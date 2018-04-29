@@ -119,6 +119,7 @@ bool Game::initConsoleScreen()
 void Game::reset()
 {
 	timestep.resetTime();
+	level.reset();
 	player.reset();
 	enemies.reset();
 	bullets.reset();

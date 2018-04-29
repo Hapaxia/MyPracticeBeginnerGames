@@ -1,8 +1,7 @@
 /*
 
 modifications:
-added level and tile map for covers
-reduced width of player to allow to be fully covered
+fixed level not resetting when everything else is reset
 
 */
 
