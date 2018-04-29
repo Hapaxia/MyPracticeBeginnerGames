@@ -1,7 +1,7 @@
 /*
 
 modifications:
-fixed level not resetting when everything else is reset
+reduced enemy speed increases
 
 */
 
