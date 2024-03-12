@@ -75,8 +75,8 @@ std::unique_ptr<Base> Play::update()
 	// prepare player's bounding box
 	pl::Vector2d playerHalfSize{ game.player.getSize().x / 2.0, game.player.getSize().y };
 	pl::RangeArea<double> playerBoundingBox;
-	playerBoundingBox.setLeftBottom(pl::Vector2d{ game.player.getPosition(), game.window.getView().getSize().y } -playerHalfSize);
-	playerBoundingBox.setRightTop({ game.player.getPosition() + playerHalfSize.x, game.window.getView().getSize().y });
+	playerBoundingBox.setLeftTop(pl::Vector2d{ game.player.getPosition(), game.window.getView().getSize().y } - playerHalfSize);
+	playerBoundingBox.setRightBottom({ game.player.getPosition() + playerHalfSize.x, game.window.getView().getSize().y });
 
 	// remove enemies hit by bullets
 	pl::RangeArea<double> enemyBoundingBox;
@@ -90,8 +90,8 @@ std::unique_ptr<Base> Play::update()
 		if (!enemy->isAlive())
 			continue;
 		enemyHalfSize = enemy->getSize() / 2.0;
-		enemyBoundingBox.setLeftBottom(enemy->getPosition() - enemyHalfSize);
-		enemyBoundingBox.setRightTop(enemy->getPosition() + enemyHalfSize);
+		enemyBoundingBox.setLeftTop(enemy->getPosition() - enemyHalfSize);
+		enemyBoundingBox.setRightBottom(enemy->getPosition() + enemyHalfSize);
 		if (enemyBoundingBox.overlaps(playerBoundingBox))
 		{
 			progression = Progression::EnemiesWon;
@@ -103,8 +103,8 @@ std::unique_ptr<Base> Play::update()
 			if (bullet.isAlive())
 			{
 				bulletHalfSize = bullet.getSize() / 2.0;
-				bulletBoundingBox.setLeftBottom(bullet.getPosition() - bulletHalfSize);
-				bulletBoundingBox.setRightTop(bullet.getPosition() + bulletHalfSize);
+				bulletBoundingBox.setLeftTop(bullet.getPosition() - pl::Vector2d{ bulletHalfSize.x, bulletHalfSize.y * 2.0 });
+				bulletBoundingBox.setRightBottom(bullet.getPosition() + pl::Vector2d{ bulletHalfSize.x, 0.0 });
 				if (enemyBoundingBox.overlaps(bulletBoundingBox))
 				{
 					addElementToVectorIfUnique(enemiesToRemove, enemy - game.enemies.begin());
@@ -129,8 +129,8 @@ std::unique_ptr<Base> Play::update()
 
 		// prepare enemy bullet's bounding box
 		pl::RangeArea<double> bulletBoundingBox;
-		bulletBoundingBox.setLeftBottom(bulletPosition - bulletCornerOffsetFromCenter);
-		bulletBoundingBox.setRightTop(bulletPosition + bulletCornerOffsetFromCenter);
+		bulletBoundingBox.setLeftTop(bulletPosition - bulletCornerOffsetFromCenter);
+		bulletBoundingBox.setRightBottom(bulletPosition + bulletCornerOffsetFromCenter);
 
 		if (enemy->isBulletAlive() && playerBoundingBox.overlaps(bulletBoundingBox))
 		{

@@ -1,14 +1,16 @@
 /*
 
 modifications:
-reduced enemy speed increases
+now runs in C++20
+fixed boundary box calculation errors (for player bullets)
+fixed use of Plinth and Dev to reflect their  latest changes
 
 */
 
 #ifndef MTD_GAME_HPP
 #define MTD_GAME_HPP
 
-#include <Dev.hpp>
+#include <DevSfml.hpp>
 #include <PlinthSfml.hpp>
 #include <Kairos.hpp>
 #include <SFML/Graphics.hpp>
@@ -29,7 +31,7 @@ public:
 	Player player;
 	Bullets bullets;
 	Enemies enemies;
-	pl::KeyMap keys;
+	pl::KeyMap<> keys;
 	sw::ConsoleScreen cs;
 	bool allowPlayerBulletFire;
 	unsigned int highScore;

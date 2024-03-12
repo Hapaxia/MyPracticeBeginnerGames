@@ -5,7 +5,7 @@
 int main()
 {
 	DEV::KeepConsoleOpen keepConsoleOpen;
-	keepConsoleOpen.setKeyRequirement(DEV::KeepConsoleOpen::Escape);
+	keepConsoleOpen.setKeyRequirement(DEV::KeepConsoleOpen::KeyRequirement::Escape);
 
 	try
 	{

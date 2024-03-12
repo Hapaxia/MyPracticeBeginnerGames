@@ -3,13 +3,6 @@
 #include <Plinth/Range.hpp>
 #include <Plinth/Random.hpp>
 
-namespace
-{
-
-pl::Random random;
-
-} // namespace
-
 Enemies::Enemies(sf::RenderWindow& window)
 	: m_speedIncreaseMultiplier(0.79)
 	, m_dropSpeedIncreaseMultiplier(1.06)
@@ -41,7 +34,7 @@ void Enemies::update(const double dt, const double targetPosition)
 		return;
 
 	constexpr double targetAccuracyRange{ 250.0 };
-	m_targetPosition = targetPosition + random.value(-targetAccuracyRange, targetAccuracyRange);
+	m_targetPosition = targetPosition + pl::Random::value(-targetAccuracyRange, targetAccuracyRange);
 
 	constexpr double targetRangeEpsilon{ 50.0 };
 
@@ -64,7 +57,7 @@ void Enemies::update(const double dt, const double targetPosition)
 
 		if ((enemy.getPosition().x >= targetPosition - targetRangeEpsilon) && (enemy.getPosition().x <= targetPosition + targetRangeEpsilon))
 		{
-			if (random.value(0.0, shootChanceRange) < (enemy.getPosition().x - m_targetPosition) / targetAccuracyRange)
+			if (pl::Random::value(0.0, shootChanceRange) < (enemy.getPosition().x - m_targetPosition) / targetAccuracyRange)
 				enemy.shoot();
 		}
 	}

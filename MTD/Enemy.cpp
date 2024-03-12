@@ -12,7 +12,7 @@ const pl::Vector2d bulletSize{ 8.0, 32.0 };
 Enemy::Enemy(const sf::View& view, const pl::Vector2d position, const pl::Vector2d size)
 	: m_position(position)
 	, m_size(size)
-	, m_positionLimits({ pl::Range<double>{ 0 + m_size.x / 2.0, view.getSize().x - m_size.x / 2.0 }, { 0 + m_size.y / 2.0, view.getSize().y - m_size.y / 2.0 } })
+	, m_positionLimits(pl::Range<double>{ 0 + m_size.x / 2.0, view.getSize().x - m_size.x / 2.0 }, pl::Range<double>{ 0 + m_size.y / 2.0, view.getSize().y - m_size.y / 2.0 })
 	, m_isMovingRight(true)
 	, m_requiresFlipping(false)
 	, m_isAlive(true)
@@ -25,9 +25,9 @@ Enemy::Enemy(const sf::View& view, const pl::Vector2d position, const pl::Vector
 void Enemy::move(const pl::Vector2d movement)
 {
 	m_position += movement;
-	if (!m_positionLimits.getHorizontalRange().contains(m_position.x))
+	if (!m_positionLimits.getHorizRange().contains(m_position.x))
 		m_requiresFlipping = true;
-	if (!m_positionLimits.getVerticalRange().contains(m_position.y))
+	if (!m_positionLimits.getVertRange().contains(m_position.y))
 		m_reachedBottom = true;
 }
 
@@ -43,7 +43,7 @@ void Enemy::shoot()
 void Enemy::updateBullet(const double dt)
 {
 	m_bullet.y += dt * bulletDropSpeed;
-	if (!m_positionLimits.getVerticalRange().contains(m_bullet.y - (bulletSize.y + m_size.y) / 2.0))
+	if (!m_positionLimits.getVertRange().contains(m_bullet.y - (bulletSize.y + m_size.y) / 2.0))
 		m_isBulletAlive = false;
 }
 

@@ -8,7 +8,7 @@
 
 inline unsigned int getColumnToCenterString(const Cs& cs, const std::string& string)
 {
-	return (cs.getMode().x - string.size()) / 2u;
+	return (cs.getMode().x - static_cast<unsigned int>(string.size())) / 2u;
 }
 
 inline bool blink(kairos::Timestep& timestep, double hold, double duration)
