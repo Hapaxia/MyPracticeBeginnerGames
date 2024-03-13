@@ -141,7 +141,7 @@ std::unique_ptr<Base> Play::update()
 	}
 
 	// test enemy bullets collision with covers
-	for (auto& enemy{ game.enemies.begin() }, enemiesEnd{ game.enemies.end() }; enemy != enemiesEnd; ++enemy)
+	for (auto enemy{ game.enemies.begin() }, enemiesEnd{ game.enemies.end() }; enemy != enemiesEnd; ++enemy)
 	{
 		const pl::Vector2d bulletPosition{ enemy->getBulletPosition() };
 		const pl::Vector2d bulletSize{ enemy->getBulletSize() };

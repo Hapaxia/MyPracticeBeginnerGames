@@ -52,12 +52,12 @@ inline unsigned long int Level::getHeight() const
 
 inline void Level::setTile(const pl::Vector2u position, const unsigned char tileValue)
 {
-	m_data[position.y * m_size.width + position.x] = tileValue;
+	m_data[static_cast<std::size_t>(position.y) * m_size.width + position.x] = tileValue;
 }
 
 inline unsigned char Level::getTile(const pl::Vector2u position) const
 {
-	return m_data[position.y * m_size.width + position.x];
+	return m_data[static_cast<std::size_t>(position.y) * m_size.width + position.x];
 }
 
 #endif // MTD_LEVEL_HPP
