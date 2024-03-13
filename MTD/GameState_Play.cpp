@@ -153,19 +153,33 @@ std::unique_ptr<Base> Play::update()
 			if (game.level.isCoordInRange(bulletBottomCenter))
 			{
 				const pl::Vector2u tilePosition{ game.level.getTilePositionAtCoord(bulletBottomCenter) };
+				const pl::Vector2u maxTilePosition{ pl::Vector2u(game.level.getSize()) - pl::Vector2u{ 1u, 1u } };
 				if (game.level.getTileHealth(tilePosition) > 0)
 				{
 					for (unsigned int y{ 0u }; y <= tilePosition.y; ++y)
 						game.level.setTile({ tilePosition.x, y }, 0u);
-					game.level.reduceTileHealth({ tilePosition.x - 2, tilePosition.y }, 1u);
-					game.level.reduceTileHealth({ tilePosition.x + 2, tilePosition.y }, 1u);
-					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y }, 2u);
-					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y }, 2u);
-					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y - 1 }, 2u);
-					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y - 1 }, 2u);
-					game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y + 1 }, 1u);
-					game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y + 1 }, 1u);
-					game.level.reduceTileHealth({ tilePosition.x, tilePosition.y + 1 }, 2u);
+					if (tilePosition.x > 0u)
+					{
+						game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y }, 2u);
+						if (tilePosition.y > 0u)
+							game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y - 1 }, 2u);
+						if (tilePosition.y < maxTilePosition.y)
+							game.level.reduceTileHealth({ tilePosition.x - 1, tilePosition.y + 1 }, 1u);
+						if (tilePosition.x > 1u)
+							game.level.reduceTileHealth({ tilePosition.x - 2, tilePosition.y }, 1u);
+					}
+					if (tilePosition.x < maxTilePosition.x)
+					{
+						game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y }, 2u);
+						if (tilePosition.y > 0u)
+							game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y - 1 }, 2u);
+						if (tilePosition.y < maxTilePosition.y)
+							game.level.reduceTileHealth({ tilePosition.x + 1, tilePosition.y + 1 }, 1u);
+						if ((tilePosition.x + 1u) < maxTilePosition.x)
+							game.level.reduceTileHealth({ tilePosition.x + 2, tilePosition.y }, 1u);
+					}
+					if (tilePosition.y < maxTilePosition.y)
+						game.level.reduceTileHealth({ tilePosition.x, tilePosition.y + 1 }, 2u);
 					enemy->killBullet();
 				}
 			}
