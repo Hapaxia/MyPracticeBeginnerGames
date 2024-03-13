@@ -115,10 +115,6 @@ std::unique_ptr<Base> Play::update()
 		}
 	}
 
-	// update high score
-	if (game.score > game.highScore)
-		game.highScore = game.score;
-
 	// kill player if in contact with enemy bullet
 	bool isPlayerDead{ false };
 	for (auto enemy{ game.enemies.begin() }, enemiesEnd{ game.enemies.end() }; enemy != enemiesEnd; ++enemy)
@@ -232,6 +228,10 @@ std::unique_ptr<Base> Play::update()
 	}
 	for (auto& bulletToRemove : bulletsToRemove)
 		game.bullets.killBullet(bulletToRemove);
+
+	// update high score
+	if (game.score > game.highScore)
+		game.highScore = game.score;
 
 	// decide on the progression
 	if (game.enemies.getNumberOfEnemiesAlive() == 0)
